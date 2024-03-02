@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import {Providers} from "@/app/providers";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
           <div className={"mb-auto px-1 overflow-auto"}>
             {children}
           </div>
+          <Footer />
         </Providers>
       </body>
     </html>

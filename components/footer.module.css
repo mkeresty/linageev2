@@ -1,0 +1,36 @@
+.footerList {
+    @apply
+    flex
+    flex-row
+    w-screen
+    font-light
+    font-linagee
+    my-[0.7em]
+    items-center
+    justify-around
+}
+
+.footerLink {
+    @apply
+    flex
+    flex-col
+    text-inherit /* inherit color from parent */
+    text-xs
+    hover:text-blue-500
+    hover:cursor-pointer
+    items-center
+}
+
+.footerIcon {
+    @apply
+    w-5
+    h-5
+    my-[0.2em]
+    font-extralight
+    text-inherit /* inherit color from parent */
+}
+
+.footerText {
+    @apply
+    text-inherit /* inherit color from parent */
+}

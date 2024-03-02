@@ -7,7 +7,7 @@ import ThemeChanger from "@/components/ThemeChanger";
 
 function Header() {
   return (
-    <Navbar fluid rounded>
+    <Navbar fluid  className='fixed z-10 w-full'>
       <Navbar.Brand as={Link} href="https://linagee.vision">
         <img src="/lnr_icon_color.svg" className="mr-3 h-6 sm:h-9" alt="Linagee Logo" />
         <span className="self-center whitespace-nowrap text-xl font-thin font-semibold text-black dark:text-white">Linagee</span>
