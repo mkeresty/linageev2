@@ -14,7 +14,7 @@ module.exports = {
     current: "currentColor",
     extend: {
       colors: {
-        stamps: {
+        linagee: {
           dark: colors.gray[900],
           gray: colors.gray[100],
           grayer: '#EDF2F7',
@@ -119,10 +119,10 @@ module.exports = {
           // 'anime': "url('/mintai/anime.webp')",
       },
       fontFamily: {
-        stamps: ['Source Sans Pro', 'sans-serif'],
-        stampsSerif: ['Source Serif Pro', 'serif'],
-        stampsMono: ['Source Code Pro', 'monospace'],
-        stampsHyperspace: ['Barlow', 'sans-serif'],
+        linagee: ['Source Sans Pro', 'sans-serif'],
+        linageeSerif: ['Source Serif Pro', 'serif'],
+        linageeMono: ['Source Code Pro', 'monospace'],
+        linageeHyperspace: ['Barlow', 'sans-serif'],
       },
       keyframes: {
         rotate: {
