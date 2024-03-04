@@ -3,10 +3,17 @@
 
 
 export default function Profile() {
+  const arr = [{title: "test"}, {title: "test2"}, {title: "test3"}]
     return (
-      <main className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center h-full p-5">
         Profile
-      </main>
+            {arr.map((item, i) => ( // Destructure 'title' directly
+                <span key={i}>
+                    here
+                    {item.title}
+                </span>
+            ))}
+      </div>
     );
   }
   

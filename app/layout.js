@@ -14,7 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} flex flex-col min-h-screen mb-20 sm:mb-0`}>
+      <body className={`${inter.className} flex flex-col min-h-screen mb-20 sm:mb-0 `}>
         <Providers>
           <Header />
           <div className={"mb-auto px-1 overflow-auto"}>

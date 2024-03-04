@@ -15,53 +15,7 @@ function Footer() {
     return (
 
         <footer className={"z-20"}>
-            {/* Visible only in mobile view 'sm' devices */}
-            <div className={"sm:hidden fixed bottom-0 left-0 w-full flex justify-center items-center shadow-2xl bg-stamps-lightBackground2 dark:bg-stamps-darkBackground2"}>
-                <ul className={classes.footerList}>
-                    <NavLink href={`/`} exact>
-                        <div className={classes.footerLink}>
-                            <RxDashboard className={classes.footerIcon}/>
-                            <h1 className={classes.footerText}>Dashboard</h1>
-                        </div>
-                    </NavLink>
-                    {/*<NavLink href={`/clubs`}>*/}
-                    {/*    <div className={classes.footerLink}>*/}
-                    {/*        <AiOutlineGlobal className={classes.footerIcon}/>*/}
-                    {/*        <h1 className={classes.footerText}>Clubs</h1>*/}
-                    {/*    </div>*/}
-                    {/*</NavLink>*/}
-                    <NavLink href={`/stamps`}>
-                        <div className={classes.footerLink}>
-                            <AiOutlineGlobal className={classes.footerIcon}/>
-                            <h1 className={classes.footerText}>Stamps</h1>
-                        </div>
-                    </NavLink>
-                    <NavLink href={`/collections`}>
-                        <div className={classes.footerLink}>
-                            <AiOutlineGlobal className={classes.footerIcon}/>
-                            <h1 className={classes.footerText}>Collections</h1>
-                        </div>
-                    </NavLink>
-                    <NavLink href={`/mintstamp`}>
-                        <div className={classes.footerLink}>
-                            <AiOutlinePlus className={classes.footerIcon}/>
-                            <span className={classes.footerText}>Mint Stamp</span>
-                        </div>
-                    </NavLink>
-                    <NavLink href={`/mintai`}>
-                        <div className={classes.footerLink}>
-                            <AiOutlinePlus className={classes.footerIcon}/>
-                            <span className={classes.footerText}>Mint AI Stamp</span>
-                        </div>
-                    </NavLink>
-                    {/*<NavLink href={`/mintsrc`}>*/}
-                    {/*    <div className={classes.footerLink}>*/}
-                    {/*        <AiOutlinePlus className={classes.footerIcon}/>*/}
-                    {/*        <h1 className={classes.footerText}>Mint SRC-20</h1>*/}
-                    {/*    </div>*/}
-                    {/*</NavLink>*/}
-                </ul>
-            </div>
+
 
             {/* Visible only in desktop view */}
             <div className={"sm:flex sm:flex-col md:flex-row items-center justify-center gap-3 m-6"}>
