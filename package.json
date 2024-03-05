@@ -12,6 +12,7 @@
     "@chriton/lnr-ethers-react": "^1.1.0",
     "@headlessui/react": "^1.7.18",
     "@headlessui/tailwindcss": "^0.2.0",
+    "@linagee/lnr-ethers-react": "^1.2.0",
     "clsx": "^2.1.0",
     "flowbite-react": "^0.7.2",
     "framer-motion": "^11.0.8",

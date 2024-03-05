@@ -3,6 +3,7 @@
 
 import { Breadcrumb } from 'flowbite-react';
 import { HiHome } from 'react-icons/hi';
+import { Fragment } from 'react';
 
 export default function BreadCrumbComponent({paths}) {
   return (
@@ -12,7 +13,9 @@ export default function BreadCrumbComponent({paths}) {
         Home
       </Breadcrumb.Item>
       {paths.map((path) => (
-        <Breadcrumb.Item href={path.link}>{path.name}</Breadcrumb.Item>
+        <Fragment key={path}>
+          <Breadcrumb.Item href={path.link}>{path.name}</Breadcrumb.Item>
+        </Fragment>
       ))}
 
     </Breadcrumb>

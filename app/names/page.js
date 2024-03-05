@@ -2,18 +2,26 @@
 
 import BreadCrumbComponent from "@/components/BreadCrumbComponent";
 import Grid from "@/components/Grid";
-import InputField from "@/components/forms/InputField";
 import { Pagination } from "flowbite-react";
-import { useState } from "react";
-import { Label, TextInput } from 'flowbite-react';
-import { IoSearch } from "react-icons/io5";
-
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from 'next/navigation'
+import Search from "@/components/forms/Search";
 
 
 export default function Names() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const searchParams = useSearchParams();
+  const search = searchParams.get('search')
+
+  useEffect(() => {
+    if(search){
+      console.log("searching for: ");
+      console.log(search);
+    }
+  }, [search]);
 
   const onPageChange = (page) => { 
     setCurrentPage(page);
@@ -161,16 +169,7 @@ const itemsnew = [
         <BreadCrumbComponent paths={[{name: "Names", link: "/names"}]}/>
         <div className="flex flex-row w-full items-end justify-between ">
           <div className=" lg:w-[25rem] md:w-[20rem] opacity-75">
-          <form>   
-    <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-    <div class="relative justify-center">
-
-        <input type="search" id="search" className="block w-full p-y-4  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required />
-        <button type="submit" className=" absolute end-1 bottom-1 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2  dark:focus:ring-blue-800">
-          <IoSearch class="h-4 w-4 " />
-        </button>
-    </div>
-</form>
+            <Search />
           </div>
         <Pagination layout="table" showIcons currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange}/>
         </div>
