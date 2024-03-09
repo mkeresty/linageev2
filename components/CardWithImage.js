@@ -5,6 +5,8 @@ import React from "react";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { SiOpensea } from "react-icons/si";
 import { IoArrowRedoSharp } from "react-icons/io5";
+import LinageeSvg from "@/components/LinageeSvg";
+import LnrSvg from "@/components/LnrSvg";
 
 
 export default function CardWithImage({item}) {
@@ -15,17 +17,18 @@ export default function CardWithImage({item}) {
         translateZ="50"
         className="text-xl font-bold text-neutral-600 dark:text-white"
       >
-        {item.title}
+        {item.domainUtf8}
       </CardItem>
 
       <CardItem translateZ="100" className="w-full mt-4">
-        <Image
+        {/* <Image
           src={item.thumbnail}
           height="1000"
           width="1000"
           className="w-full h-auto object-cover rounded-xl group-hover/card:shadow-xl"
           alt="thumbnail"
-        />
+        /> */}
+        <LnrSvg item={item} classVars={"w-full h-auto object-cover overflow-hidden rounded-xl group-hover/card:shadow-xl"} />
       </CardItem>
       <div className="flex justify-between items-center mt-5">
         <CardItem

@@ -10,132 +10,132 @@ import { callAPI, makeQueryClient} from "@/utils/utils";
 
 const itemsnew = [
   {
-    title: "Bad",
+    domainUtf8: "Bad",
     normalized: false,
-    resolvable: false,
+    valid: false,
     link: "/",
     thumbnail:
       "linagee/warning.svg",
   },
   {
-    title: "437",
+    domainUtf8: "437",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "linagee/437.og.svg",
   },
   {
-    title: "wizard",
+    domainUtf8: "wizard",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/wizard.og.svg",
   },
   {
-    title: "0972",
+    domainUtf8: "0972",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/0972.og.svg",
   },
 
   {
-    title: "b",
+    domainUtf8: "b",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/b.og.svg",
   },
   {
-    title: "account",
+    domainUtf8: "account",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/account.og.svg",
   },
   {
-    title: "feel",
+    domainUtf8: "feel",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/feel.og.svg",
   },
 
   {
-    title: "jess",
+    domainUtf8: "jess",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "linagee/jess.og.svg",
   },
   {
-    title: "robot",
+    domainUtf8: "robot",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/robot.og.svg",
   },
   {
-    title: "vacation",
+    domainUtf8: "vacation",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/vacation.og.svg",
   },
   {
-    title: "844",
+    domainUtf8: "844",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/844.og.svg",
   },
   {
-    title: "ai",
+    domainUtf8: "ai",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/ai.og.svg",
   },
 
   {
-    title: "advertising",
+    domainUtf8: "advertising",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/advertising.og.svg",
   },
   {
-    title: "pfp",
+    domainUtf8: "pfp",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/pfp.og.svg",
   },
   {
-    title: "the",
+    domainUtf8: "the",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/the.og.svg",
   },
   {
-    title: "bobby",
+    domainUtf8: "bobby",
     normalized: true,
-    resolvable: true,
+    valid: true,
     link: "/",
     thumbnail:
       "/linagee/bobby.og.svg",
@@ -153,9 +153,11 @@ export default function Names() {
   const searchParams = useSearchParams();
   const searchRequest = searchParams.get('search')
 
-  let items = use(queryClient(`search-${searchRequest}`, () => callAPI("graph", JSON.stringify({field: 'domainUtf8', value: searchRequest, offset: 0}))));
+  // let items = use(queryClient(`search-${searchRequest}`, () => callAPI("graph", JSON.stringify({field: 'domainUtf8', value: searchRequest, offset: 0}))));
 
-  items = items?.results || []
+  // items = items?.results || []
+
+  let items = itemsnew
 
 
   const onPageChange = (page) => { 
@@ -167,17 +169,17 @@ export default function Names() {
       <div className="flex flex-col justify-center items-center h-full p-5 mt-[60px] m-10">
         <BreadCrumbComponent paths={[{name: "Names", link: "/names"}]}/>
         <div className="flex flex-row w-full items-end justify-between ">
-          <div className=" lg:w-[25rem] md:w-[20rem] opacity-75">
+          <div className=" lg:w-[25rem] md:w-[20rem] opacity-75 mt-2">
             <Search />
           </div>
-          {items && items?.search.length > 0 && (
+          {items && items?.search?.length > 0 && (
         <Pagination layout="table" showIcons currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange}/>
           )}
 
         </div>
         
         <Grid items={items}/>
-        {items && items?.search.length > 0 && (
+        {items && items?.search?.length > 0 && (
         <Pagination layout="table" showIcons currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange}/>
           )}
       </div>
