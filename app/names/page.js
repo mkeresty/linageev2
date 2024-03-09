@@ -7,6 +7,8 @@ import { useState, useEffect, use } from "react";
 import { useSearchParams, useRouter } from 'next/navigation'
 import Search from "@/components/forms/Search";
 import { callAPI, makeQueryClient} from "@/utils/utils";
+import { hydrateNames } from "@/utils/nameUtils";
+import { useLnrGetAddress } from '@linagee/lnr-ethers-react';
 
 const itemsnew = [
   {
@@ -153,11 +155,9 @@ export default function Names() {
   const searchParams = useSearchParams();
   const searchRequest = searchParams.get('search')
 
-  // let items = use(queryClient(`search-${searchRequest}`, () => callAPI("graph", JSON.stringify({field: 'domainUtf8', value: searchRequest, offset: 0}))));
+  let items = use(queryClient(`search-${searchRequest}`, () => callAPI("graph", JSON.stringify({field: 'domainUtf8', value: searchRequest, offset: 0}))));
 
-  // items = items?.results || []
-
-  let items = itemsnew
+  items = hydrateNames(items.results)
 
 
   const onPageChange = (page) => { 

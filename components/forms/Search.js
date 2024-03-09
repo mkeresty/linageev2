@@ -26,7 +26,7 @@ export default function Search(){
             router.push(`/names/?search=${stringName}`)
         } 
         catch(e){
-            console.log(e);
+            //console.log(e);
         }
 
     }

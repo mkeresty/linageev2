@@ -1,5 +1,6 @@
 import {NextResponse} from 'next/server';
 import Graph from '@/utils/Graph';
+import { hydrateNames } from '@/utils/nameUtils';
 
 
 export async function POST(req) {
@@ -10,7 +11,9 @@ export async function POST(req) {
         let results = await Graph.searchGraph(process.env.SUBGRAPH_URL, field, value, offset)
 
         if(results.data){
-            return NextResponse.json({results: results.data});
+            let joinedResults = results.data.exact.concat(results.data.search)
+
+            return NextResponse.json({results: joinedResults}, {status: 200});
         } else {
             return NextResponse.json({error: {message: "No results found"}}, {status: 200});
         }
@@ -18,7 +21,7 @@ export async function POST(req) {
         
     
     } catch(error){
-        console.log(error)
+        //console.log(error)
         return NextResponse.json({error: {message: error.message}}, {status: 500})
     }
 }

@@ -17,7 +17,7 @@ export async function callAPI(endpoint, body = {}, method = 'POST') {
                 // errorData = res.statusText;
             }
 
-            throw new APIError(`HTTP error! status: ${res.status}`, res.status, errorData, res);
+            throw new Error(`HTTP error! status: ${res.status}`, res.status, errorData, res);
         }
 
         let jsonResponse = await res.json();

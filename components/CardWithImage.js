@@ -5,19 +5,21 @@ import React from "react";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { SiOpensea } from "react-icons/si";
 import { IoArrowRedoSharp } from "react-icons/io5";
-import LinageeSvg from "@/components/LinageeSvg";
 import LnrSvg from "@/components/LnrSvg";
 
 
 export default function CardWithImage({item}) {
   return (
-    <CardContainer className="inter-var">
-    <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-blue-500/[0.3] dark:bg-gray-800 dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[17rem] h-auto rounded-xl  p-6 border  hover:cursor-pointer">
+    <CardContainer className="inter-var sm:w-[17rem] w-full">
+    <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-blue-500/[0.3] dark:bg-gray-800 dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl  p-6 border  hover:cursor-pointer">
       <CardItem
         translateZ="50"
         className="text-xl font-bold text-neutral-600 dark:text-white"
       >
-        {item.domainUtf8}
+
+          {item.domainUtf8.length > 12 ? item.domainUtf8.substring(0, 10) + "..." : item.domainUtf8}
+
+        
       </CardItem>
 
       <CardItem translateZ="100" className="w-full mt-4">
