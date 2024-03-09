@@ -10,7 +10,7 @@ export default function InputField() {
     <div className="max-w-sm opacity-75">
       <div className="my-4 block">
       </div>
-      <TextInput withShadow={"on"} id="domain" type="text" rightIcon={IoSearch} placeholder="name.og"/>
+      <TextInput shadow id="domain" type="text" rightIcon={IoSearch} placeholder="name.og"/>
     </div>
   );
 }

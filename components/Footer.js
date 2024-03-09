@@ -11,7 +11,7 @@ import { useTheme } from "next-themes";
 
 function Footer() {
     const { theme } = useTheme();
-    console.log(theme)
+
     return (
 
         <footer className={"z-20"}>

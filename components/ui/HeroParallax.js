@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import InputField from "@/components/forms/InputField";
+import Search from "@/components/forms/Search";
 
 export const HeroParallax = ({
   products,
@@ -105,7 +106,10 @@ export const Header = () => {
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
         Bringing the past into the future with a universal on-chain name service – accessible to all, <span className="font-semibold">always.</span>
       </p>
-      <InputField />
+      <div className="max-w-xs mr-2">
+      <Search />
+      </div>
+      
     </div>
   );
 };
