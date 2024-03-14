@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { Navbar } from 'flowbite-react';
 import ThemeChanger from "@/components/ThemeChanger";
+import Test from "@/components/Modals/Navbar/Layout";
 
 function Header() {
   return (
@@ -13,7 +14,6 @@ function Header() {
         <span className="self-center whitespace-nowrap text-xl font-thin font-semibold text-black dark:text-white">Linagee</span>
 
       </Navbar.Brand>
-      <Navbar.Toggle />
       <Navbar.Collapse>
         <Navbar.Link href="/" active>
           Home
@@ -36,6 +36,8 @@ function Header() {
       {/* <div className={"pr-3 hidden lg:flex"}>
                         <ThemeChanger/>
                     </div> */}
+
+      <Test />
     </Navbar>
   );
 }
