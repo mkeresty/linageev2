@@ -2,23 +2,6 @@
 
 import { lnr } from '@linagee/lnr-ethers-react';
 
-export function isValidBytes(bytes){
-    var isValid = false;
-    var name = lnr.utils.bytes32ToDomain(bytes)
-    try{
-        var validName = lnr.utils.isValidDomain(name); 
-
-        //console.log(og.lnr.domainToBytes32(validName[1]));
-        //console.log(bytes)
-        if (lnr.utils.domainToBytes32(validName[1]) === bytes){
-            var isValid = true
-        }
-    }
-    catch(e){
-        return(false)
-    }
-    return(isValid)
-}
 
 export function hydrateNames(items){
     return items.map((item) => {
@@ -27,8 +10,6 @@ export function hydrateNames(items){
         try{
             normalized = lnr.utils.isNormalizedBytes(item?.domainBytecode || undefined)
             valid = isValidBytes(item?.domainBytecode)
-            console.log("result ",valid,  item.domainUtf8)
- 
 
         }
         catch(e){
@@ -37,8 +18,26 @@ export function hydrateNames(items){
         if(valid !== true){
             item.domainUtf8 = "INVALID"
         }
-        item.normalized = normalized
-        item.valid = valid // isValidBytes(item?.domainBytecode || undefined)
+        else{
+            item.normalized = normalized
+            item.valid = valid 
+        }
+
         return item
+
     })
+}
+
+
+
+export function isValidBytes(bytes){
+    var domain = lnr.utils.bytes32ToDomain(bytes)
+    try{
+        var validName = lnr.utils.isValidDomain(domain); 
+        return(validName)[0]
+    }
+    catch(e){
+        return(false)
+    }
+
 }

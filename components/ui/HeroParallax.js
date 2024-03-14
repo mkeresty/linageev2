@@ -53,7 +53,7 @@ export const HeroParallax = ({
   return (
     <div
       ref={ref}
-      className="h-[300vh] py-40 overflow-hidden  antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d] w-full"
+      className="h-[350vh] py-40 overflow-hidden  antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d] w-full"
     >
       <Header />
       <motion.div
@@ -106,7 +106,7 @@ export const Header = () => {
       <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
         Bringing the past into the future with a universal on-chain name service – accessible to all, <span className="font-semibold">always.</span>
       </p>
-      <div className="max-w-xs mr-2">
+      <div className="max-w-xs mr-2 my-4">
       <Search />
       </div>
       

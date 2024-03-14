@@ -7,7 +7,7 @@ import ThemeChanger from "@/components/ThemeChanger";
 
 function Header() {
   return (
-    <Navbar fluid  className='fixed z-10 w-full'>
+    <Navbar fluid className='fixed z-10 w-full'>
       <Navbar.Brand as={Link} href="https://linagee.vision">
         <img src="/lnr_icon_color.svg" className="mr-3 h-6 sm:h-9" alt="Linagee Logo" />
         <span className="self-center whitespace-nowrap text-xl font-thin font-semibold text-black dark:text-white">Linagee</span>
@@ -24,10 +24,18 @@ function Header() {
         <Navbar.Link href="/profile">Profile</Navbar.Link>
         <Navbar.Link href="#">About</Navbar.Link>
         <Navbar.Link href="#">Connect</Navbar.Link>
+ 
+        <Navbar.Link >
+          <span className='flex flex-row gap-x-1'>
+          <ThemeChanger />
+          </span>
+        </Navbar.Link>
+          
+
       </Navbar.Collapse>
-      <div className={"pr-3 hidden lg:flex"}>
+      {/* <div className={"pr-3 hidden lg:flex"}>
                         <ThemeChanger/>
-                    </div>
+                    </div> */}
     </Navbar>
   );
 }

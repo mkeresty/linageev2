@@ -10,7 +10,7 @@ import LnrSvg from "@/components/LnrSvg";
 
 export default function CardWithImage({item}) {
   return (
-    <CardContainer className="inter-var sm:w-[17rem] w-full">
+    <CardContainer className="inter-var sm:w-[17rem] px-3 w-full h-full">
     <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-blue-500/[0.3] dark:bg-gray-800 dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl  p-6 border  hover:cursor-pointer">
       <CardItem
         translateZ="50"
