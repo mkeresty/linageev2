@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Navbar } from 'flowbite-react';
 import ThemeChanger from "@/components/ThemeChanger";
-import Test from "@/components/Modals/Navbar/Layout";
+import Test from "@/components/Modals/NavbarExpandable";
 
 function Header() {
   return (

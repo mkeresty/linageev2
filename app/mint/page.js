@@ -1,6 +1,6 @@
 "use client";
 
-import Test from "@/components/Modals/Navbar/Layout";
+import Test from "@/components/Modals/NavbarExpandable";
 
 
 

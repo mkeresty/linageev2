@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import styles from './Layout.module.css';
 import { IoMdMenu , IoIosClose} from "react-icons/io";
 import { useRouter } from "next/navigation";
 import ThemeChanger from "@/components/ThemeChanger";
+import { useCurrentWidth } from "@/utils/hooks/useCurrentWidth";
+import Hamburger from 'hamburger-react'
 
 
 const links = [
@@ -16,15 +17,23 @@ const links = [
   { id: 5, name: "Connect", path: "/connect" },
 ];
 
-export default function Test() {
+export default function NavbarExpandable() {
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
+    const width = useCurrentWidth();
 
     const click = target => (e) => { // <-- consume target
         setTimeout(() => {
           router.push(target); // <-- navigate after some delta
         }, 200);
       };
+
+
+      useEffect(() => { 
+        if (width >= 768) {
+          setIsOpen(false);
+        }
+      }, [width]);
     
   
     return (
@@ -75,14 +84,17 @@ export default function Test() {
     <div className="hidden w-full md:block md:w-auto" id="navbar-default">
       <ul className="font-light flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 ">
         {links.map((link) => (
-            <li href={link.path}>{link.name}</li>
+            <li key={link.id} href={link.path}>{link.name}</li>
         ))}
       </ul>
     </div>
     <div className="flex flex-row gap-x-2 items-center justify-center">
     <ThemeChanger />
-    {!isOpen && (<IoMdMenu onClick={() => setIsOpen(!isOpen)} size={30} className={`block hover:cursor-pointer md:hidden `}/>)}
+    {width < 768 && (<Hamburger size={20} toggled={isOpen} toggle={setIsOpen} className={`block hover:cursor-pointer md:hidden `}/>)}
+    {/* <Hamburger size={20} toggled={isOpen} toggle={setIsOpen} className={`block hover:cursor-pointer md:hidden `}/> */}
+    {/* {!isOpen && (<IoMdMenu onClick={() => setIsOpen(!isOpen)} size={30} className={`block hover:cursor-pointer md:hidden `}/>)}
     {isOpen && (<IoIosClose onClick={() => setIsOpen(!isOpen)} size={30} className={`block hover:cursor-pointer md:hidden `}/>)}
+   */}
   </div>
   </div>
       </>

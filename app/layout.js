@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import {Providers} from "@/app/providers";
 import Footer from "@/components/Footer";
-import Test from "@/components/Modals/Navbar/Layout";
+import NavbarExpandable from "@/components/Modals/NavbarExpandable";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
       <body className={`${inter.className} flex flex-col min-h-screen mb-20 sm:mb-0 `}>
         <Providers>
           {/* <Header /> */}
-          <Test />
+          <NavbarExpandable />
           <div className={"mb-auto px-1 overflow-auto"}>
             {children}
           </div>
