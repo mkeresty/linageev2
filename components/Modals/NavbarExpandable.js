@@ -14,7 +14,7 @@ const links = [
   { id: 2, name: "Mint", path: "/mint" },
   { id: 3, name: "Profile", path: "/profile" },
   { id: 4, name: "About", path: "/about" },
-  { id: 5, name: "Connect", path: "/connect" },
+  { id: 5, name: "Explore", path: "/names" },
 ];
 
 export default function NavbarExpandable() {
@@ -41,7 +41,7 @@ export default function NavbarExpandable() {
 
       <motion.div
         layout
-        data-isOpen={isOpen}
+        data-isopen={isOpen}
         className={`${isOpen ? "rounded-b-[50px] shadow-lg" : "h-[50px] rounded-b-2xl "}  bg-white dark:bg-gray-800 w-full flex justify-between mx-auto overflow-hidden fixed  z-40` }
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -75,7 +75,7 @@ export default function NavbarExpandable() {
         )}
       </motion.div>
       <div className="w-full flex justify-between mx-auto p-4 h-[50px] fixed  z-50">
-    <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse ">
+    <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse ">
     <img src="/lnr_icon_color.svg" className="mr-3 h-6 sm:h-9" alt="Linagee Logo" />
         <span className="self-center whitespace-nowrap text-xl font-thin font-semibold text-black dark:text-white">Linagee</span>
 
@@ -84,7 +84,7 @@ export default function NavbarExpandable() {
     <div className="hidden w-full md:block md:w-auto" id="navbar-default">
       <ul className="font-light flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 ">
         {links.map((link) => (
-            <li key={link.id} href={link.path}>{link.name}</li>
+            <li key={link.id} ><a href={link.path}>{link.name}</a></li>
         ))}
       </ul>
     </div>

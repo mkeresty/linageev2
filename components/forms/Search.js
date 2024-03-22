@@ -4,6 +4,7 @@ import { IoSearch } from "react-icons/io5";
 import { useSearchParams, useRouter } from 'next/navigation'
 import { lnr } from '@linagee/lnr-ethers-react';
 import { useState } from "react";
+import {ethers }from 'ethers';
 
 export default function Search(){
     
@@ -12,6 +13,10 @@ export default function Search(){
 
     const handleSearch = () =>{
         let stringName = searchName;
+        if(ethers.utils.isAddress(stringName) === true){
+            router.push(`/profile?address=${stringName}`)
+            return
+        }
         if(stringName.length < 1){
             return;
         }
@@ -24,6 +29,7 @@ export default function Search(){
             // console.log(bytes);
             
             router.push(`/names/?search=${stringName}`)
+            return
         } 
         catch(e){
             //console.log(e);

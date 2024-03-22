@@ -45,23 +45,7 @@ class Graph {
         const resp = await this.callAPI(endpoint, JSON.stringify({
           query: `
             query {
-                exact: domains(where: {${field}: "${value}"}) {
-                domainUtf8
-                domainBytecode
-                owner {
-                    id
-                }
-                wrappedDomainOwner {
-                    id
-                }
-                primary
-                subRegistrar
-                content
-                reserveDate
-                wrapped
-                registerIndex
-                },
-                search: domains(where: {${field}_contains_nocase: "${value}", registerIndex_gt: ${offset}}) {
+                search: domains(where: {${field}_contains_nocase: "${value}", registerIndex_gt: ${offset}}, orderBy: registerIndex, first: 18) {
                 domainUtf8
                 domainBytecode
                 owner {
@@ -85,73 +69,43 @@ class Graph {
         return resp;
       }
 
-      static async searchByAddressOld(endpoint, field="owner", value="", offset=0) {
-
-        const resp = await this.callAPI(endpoint, JSON.stringify({
-          query: `
-          query {
-            exact: domains(where: {
-                AND: [
-                    OR: [
-                      { ${field}: "${value}" },
-                      { wrappedDomainOwner: "${value}" }
-                    ],
-                    registerIndex_gt: 410255
-                  ],
-            }) {
-                domainUtf8
-                domainBytecode
-                owner {
-                    id
-                }
-                wrappedDomainOwner {
-                    id
-                }
-                primary
-                subRegistrar
-                content
-                reserveDate
-                wrapped
-                registerIndex
-            },
-        }
-          `
-        }));
-      
-        return resp;
-      }
-      
-    
-    
       static async searchByAddress(endpoint, field="owner", value="", offset=0) {
 
         const resp = await this.callAPI(endpoint, JSON.stringify({
           query: `
           query {
-            domains(where: {${field}: "${value}", registerIndex_gt: 410254 }
-            }) {
-                domainUtf8
-                domainBytecode
-                owner {
-                    id
-                }
-                wrappedDomainOwner {
-                    id
-                }
-                primary
-                subRegistrar
-                content
-                reserveDate
-                wrapped
-                registerIndex
-            },
-        }
+            domains(where: {
+              and: [
+                  {or: [
+                { owner_contains_nocase: "${value}" },
+                { wrappedDomainOwner_contains_nocase: "${value}" }
+                  ]}
+              {registerIndex_gt: ${offset}}],
+            }, orderBy: registerIndex, first: 18) {
+              domainUtf8
+              domainBytecode
+              owner {
+                id
+              }
+              wrappedDomainOwner {
+                id
+              }
+              primary
+              subRegistrar
+              content
+              reserveDate
+              wrapped
+              registerIndex
+            }
+          }
+          
           `
         }));
       
         return resp;
       }
       
+    
 
 
  

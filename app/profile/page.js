@@ -27,7 +27,6 @@ export default function Profile() {
 
   items = hydrateNames(items.results)
 
-  console.log("items", items)
 
   const { name, error, hasError, loading } = useLnrGetPrimaryName(searchRequest);
 
