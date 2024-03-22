@@ -4,6 +4,9 @@ import { lnr } from '@linagee/lnr-ethers-react';
 
 
 export function hydrateNames(items){
+    if(!items){
+        return []
+    }
     return items.map((item) => {
         let normalized = false
         let valid = false

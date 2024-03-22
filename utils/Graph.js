@@ -13,7 +13,7 @@ class Graph {
                 },
                 body: body,
                 next: {
-                    revalidate: 90
+                    revalidate: 0
                 }
             },
             );
@@ -41,6 +41,7 @@ class Graph {
 
 
       static async searchGraph(endpoint, field="domainUtf8", value="", offset=0) {
+
         const resp = await this.callAPI(endpoint, JSON.stringify({
           query: `
             query {
@@ -83,9 +84,74 @@ class Graph {
       
         return resp;
       }
+
+      static async searchByAddressOld(endpoint, field="owner", value="", offset=0) {
+
+        const resp = await this.callAPI(endpoint, JSON.stringify({
+          query: `
+          query {
+            exact: domains(where: {
+                AND: [
+                    OR: [
+                      { ${field}: "${value}" },
+                      { wrappedDomainOwner: "${value}" }
+                    ],
+                    registerIndex_gt: 410255
+                  ],
+            }) {
+                domainUtf8
+                domainBytecode
+                owner {
+                    id
+                }
+                wrappedDomainOwner {
+                    id
+                }
+                primary
+                subRegistrar
+                content
+                reserveDate
+                wrapped
+                registerIndex
+            },
+        }
+          `
+        }));
+      
+        return resp;
+      }
       
     
     
+      static async searchByAddress(endpoint, field="owner", value="", offset=0) {
+
+        const resp = await this.callAPI(endpoint, JSON.stringify({
+          query: `
+          query {
+            domains(where: {${field}: "${value}", registerIndex_gt: 410254 }
+            }) {
+                domainUtf8
+                domainBytecode
+                owner {
+                    id
+                }
+                wrappedDomainOwner {
+                    id
+                }
+                primary
+                subRegistrar
+                content
+                reserveDate
+                wrapped
+                registerIndex
+            },
+        }
+          `
+        }));
+      
+        return resp;
+      }
+      
 
 
  
