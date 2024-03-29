@@ -2,6 +2,7 @@ const colors = require('tailwindcss/colors')
 const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
+const {nextui} = require("@nextui-org/react");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -10,6 +11,7 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     'node_modules/flowbite-react/lib/esm/**/*.js',
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: 'class',
   theme: {
@@ -62,6 +64,7 @@ module.exports = {
   },
 
   plugins: [
+    nextui(),
     require("flowbite/plugin"),
     require("@headlessui/tailwindcss"),
     addVariablesForColors

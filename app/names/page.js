@@ -2,7 +2,7 @@
 
 import BreadCrumbComponent from "@/components/BreadCrumbComponent";
 import Grid from "@/components/Grid";
-import {Pagination} from "flowbite-react";
+import {Pagination} from "@nextui-org/react";
 import { useState, useEffect, use } from "react";
 import { useSearchParams, useRouter } from 'next/navigation'
 import Search from "@/components/forms/Search";
@@ -164,13 +164,23 @@ export default function Names() {
   const [pages, setPages ] = useState([{p: 1, offset: 0}])
   const [currentPage, setCurrentPage] = useState(1)
 
-  async function fetchItems(search, offset){
+  async function fetchItems(search, offset, initial = false){
+
     if(search && search.length > 0){
       let respItems = await callAPI("graph", JSON.stringify({field: 'domainUtf8', value: search, offset: offset}));
       respItems = hydrateNames(respItems.results)
       setItems(respItems)
       console.log("items ", respItems)
-      if(respItems.length > 0){
+      if(respItems.length > 0 && initial === true && parseInt(offset) > 0){
+        console.log(" initial is not page 1")
+        updatePages(respItems.slice(-1)[0].registerIndex || 0, initial, [{p: 1, offset: 0}, {p: 2, offset: parseInt(offset)}])
+      } 
+      if(respItems.length > 0 && initial === true && parseInt(offset) == 0){
+        console.log(" initial is page 1")
+        updatePages(respItems.slice(-1)[0].registerIndex || 0, initial, [{p: 1, offset: 0}])
+      } 
+      else if (respItems.length > 0 ){
+        console.log(" standard page")
         updatePages(respItems.slice(-1)[0].registerIndex || 0)
 
       }
@@ -179,23 +189,41 @@ export default function Names() {
   }
 
   useEffect(() => { 
-    fetchItems(searchRequest, currentOffset)
+    fetchItems(searchRequest, currentOffset, true)
 
   }, [])
 
-  function updatePages(offset) {
-    let maxOffset = Math.max(...pages.map(page => page.offset));
+  function updatePages(offset, initial = false, pagesArg = undefined) {
+    console.log("pagesArg entering update ", pagesArg, "pagesss ", pages)
+    
 
-      if (offset > maxOffset) {
+    let maxOffset = Math.max(...pages.map(page => page.offset));
+    console.log("max offset ", maxOffset, "pages ", pages, "offset ", offset)
+
+      if (offset > maxOffset ) {
         let prevPages = pages
         setPages([...prevPages, {p: prevPages.slice(-1)[0].p + 1, offset: offset}])
+      }
+      if (offset > maxOffset && initial === true, pagesArg) {
+        console.log("prev pages ", pagesArg)
+        setPages([...pagesArg, {p: pagesArg.slice(-1)[0].p + 1, offset: offset}])
+
+        
+        console.log("set current  page ", currentPage)
+      }
+      if(parseInt(currentOffset) == 0){
+        console.log("srtting restart")
+        setCurrentPage(1)
+      }
+      if(initial === true && parseInt(currentOffset) > 0){
+        
+        setCurrentPage(2)
+  
       }
 
   }
 
-  useEffect(() => {
-    console.log("pages ", pages)
-  }, [pages]);
+
 
   function findPageByOffset(targetOffset) {
     for (let i = 0; i < pages.length; i++) {
@@ -217,6 +245,8 @@ function findOffsetByPage(targetPage) {
 }
 
 
+useEffect(() => { console.log("pages ", pages)}, [pages])
+
 
 
 
@@ -229,8 +259,12 @@ function findOffsetByPage(targetPage) {
       router.push(`/names?search=${searchRequest}&offset=${targetOffset}`)
       //router.push("/names", {query: {search: searchRequest, offset: items.slice(-1)[0].registerIndex || 0}})
       //window.location.reload();
+      if(p === 1){
+        fetchItems(searchRequest, targetOffset, true)
+      } else{
+        fetchItems(searchRequest, targetOffset)
+      }
   
-      fetchItems(searchRequest, targetOffset)
 
     } else{
       const targetOffset = findOffsetByPage(p)
@@ -242,7 +276,11 @@ function findOffsetByPage(targetPage) {
   
       router.push(`/names?search=${searchRequest}&offset=${targetOffset}`)
 
-      fetchItems(searchRequest, targetOffset)
+      if(p === 1){
+        fetchItems(searchRequest, targetOffset, true)
+      } else{
+        fetchItems(searchRequest, targetOffset)
+      }
     }
 
 
@@ -257,7 +295,19 @@ function findOffsetByPage(targetPage) {
             <Search />
           </div>
 
-        <Pagination currentPage={currentPage} totalPages={pages.length} onPageChange={handlePageChange}/>
+        <Pagination 
+            showShadow 
+            showControls 
+            size={"sm"} 
+            page={currentPage} 
+            total={pages.length} 
+            onChange={handlePageChange}
+            classNames={{
+              item: "shadown-sm",
+              cursor:
+                "bg-gradient-to-b shadow-sm from-[#bd8eff] to-[#69e0ff] text-white font-bold",
+            }}
+          />
           
 
         </div>

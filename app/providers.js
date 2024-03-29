@@ -3,6 +3,7 @@
 import {ThemeProvider} from 'next-themes'
 import {useEffect, useState} from "react";
 import {ethers} from "ethers";
+import {NextUIProvider} from "@nextui-org/react";
 import { LnrConfigProvider } from '@linagee/lnr-ethers-react';
 
 const rpcNodes = [
@@ -63,9 +64,11 @@ export function Providers({children}) {
 
     return (
         <ThemeProvider enableSystem={true} attribute="class">
+        <NextUIProvider>
             <LnrConfigProvider config={config}>
                 {children}
             </LnrConfigProvider>
+        </NextUIProvider>
         </ThemeProvider>
     );
 }
