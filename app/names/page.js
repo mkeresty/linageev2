@@ -10,6 +10,8 @@ import { callAPI, makeQueryClient} from "@/utils/utils";
 import { hydrateNames } from "@/utils/nameUtils";
 import { useLnrGetAddress } from '@linagee/lnr-ethers-react';
 import { current } from "tailwindcss/colors";
+// import {usePaginationHook} from "@/utils/hooks/usePaginationHook";
+import PaginationComponent from "@/components/PaginationComponent";
 
 const itemsnew = [
   {
@@ -155,136 +157,156 @@ export default function Names() {
 
   const searchParams = useSearchParams();
   const searchRequest = searchParams.get('search')
-  console.log("offset ", searchParams.get('offset'))
   const currentOffset = searchParams.get('offset') || 0;
-  
+  const [loading, setLoading] = useState(false)
   const [items, setItems] = useState([]);
 
 
-  const [pages, setPages ] = useState([{p: 1, offset: 0}])
-  const [currentPage, setCurrentPage] = useState(1)
+  //const { PaginationComponent, targetOffset } = usePaginationHook({props: {itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex || 0, initial: true}})
 
-  async function fetchItems(search, offset, initial = false){
 
-    if(search && search.length > 0){
-      let respItems = await callAPI("graph", JSON.stringify({field: 'domainUtf8', value: search, offset: offset}));
-      respItems = hydrateNames(respItems.results)
-      setItems(respItems)
-      console.log("items ", respItems)
-      if(respItems.length > 0 && initial === true && parseInt(offset) > 0){
-        console.log(" initial is not page 1")
-        updatePages(respItems.slice(-1)[0].registerIndex || 0, initial, [{p: 1, offset: 0}, {p: 2, offset: parseInt(offset)}])
-      } 
-      if(respItems.length > 0 && initial === true && parseInt(offset) == 0){
-        console.log(" initial is page 1")
-        updatePages(respItems.slice(-1)[0].registerIndex || 0, initial, [{p: 1, offset: 0}])
-      } 
-      else if (respItems.length > 0 ){
-        console.log(" standard page")
-        updatePages(respItems.slice(-1)[0].registerIndex || 0)
+  async function fetchItems(search, offset, initial = false){ 
+        if(search && search.length > 0){
+          let respItems = await callAPI("graph", JSON.stringify({field: 'domainUtf8', value: search, offset: offset}));
+          respItems = hydrateNames(respItems.results)
+          setItems(respItems)
+          console.log("items ", respItems)
 
-      }
-  
-    }
+          }
   }
 
   useEffect(() => { 
+    setLoading(true)
     fetchItems(searchRequest, currentOffset, true)
+    setLoading(false)
 
-  }, [])
+  }, [currentOffset, searchRequest])
 
-  function updatePages(offset, initial = false, pagesArg = undefined) {
-    console.log("pagesArg entering update ", pagesArg, "pagesss ", pages)
+
+  // const [pages, setPages ] = useState([{p: 1, offset: 0}])
+  // const [currentPage, setCurrentPage] = useState(1)
+
+  // async function fetchItems(search, offset, initial = false){
+
+  //   if(search && search.length > 0){
+  //     let respItems = await callAPI("graph", JSON.stringify({field: 'domainUtf8', value: search, offset: offset}));
+  //     respItems = hydrateNames(respItems.results)
+  //     setItems(respItems)
+  //     console.log("items ", respItems)
+  //     if(respItems.length > 0 && initial === true && parseInt(offset) > 0){
+  //       console.log(" initial is not page 1")
+  //       updatePages(respItems.slice(-1)[0].registerIndex || 0, initial, [{p: 1, offset: 0}, {p: 2, offset: parseInt(offset)}])
+  //     } 
+  //     if(respItems.length > 0 && initial === true && parseInt(offset) == 0){
+  //       console.log(" initial is page 1")
+  //       updatePages(respItems.slice(-1)[0].registerIndex || 0, initial, [{p: 1, offset: 0}])
+  //     } 
+  //     else if (respItems.length > 0 ){
+  //       console.log(" standard page")
+  //       updatePages(respItems.slice(-1)[0].registerIndex || 0)
+
+  //     }
+  
+  //   }
+  // }
+
+  // useEffect(() => { 
+  //   fetchItems(searchRequest, currentOffset, true)
+
+  // }, [])
+
+//   function updatePages(offset, initial = false, pagesArg = undefined) {
+//     console.log("pagesArg entering update ", pagesArg, "pagesss ", pages)
     
 
-    let maxOffset = Math.max(...pages.map(page => page.offset));
-    console.log("max offset ", maxOffset, "pages ", pages, "offset ", offset)
+//     let maxOffset = Math.max(...pages.map(page => page.offset));
+//     console.log("max offset ", maxOffset, "pages ", pages, "offset ", offset)
 
-      if (offset > maxOffset ) {
-        let prevPages = pages
-        setPages([...prevPages, {p: prevPages.slice(-1)[0].p + 1, offset: offset}])
-      }
-      if (offset > maxOffset && initial === true, pagesArg) {
-        console.log("prev pages ", pagesArg)
-        setPages([...pagesArg, {p: pagesArg.slice(-1)[0].p + 1, offset: offset}])
+//       if (offset > maxOffset ) {
+//         let prevPages = pages
+//         setPages([...prevPages, {p: prevPages.slice(-1)[0].p + 1, offset: offset}])
+//       }
+//       if (offset > maxOffset && initial === true, pagesArg) {
+//         console.log("prev pages ", pagesArg)
+//         setPages([...pagesArg, {p: pagesArg.slice(-1)[0].p + 1, offset: offset}])
 
         
-        console.log("set current  page ", currentPage)
-      }
-      if(parseInt(currentOffset) == 0){
-        console.log("srtting restart")
-        setCurrentPage(1)
-      }
-      if(initial === true && parseInt(currentOffset) > 0){
+//         console.log("set current  page ", currentPage)
+//       }
+//       if(parseInt(currentOffset) == 0){
+//         console.log("srtting restart")
+//         setCurrentPage(1)
+//       }
+//       if(initial === true && parseInt(currentOffset) > 0){
         
-        setCurrentPage(2)
+//         setCurrentPage(2)
   
-      }
+//       }
 
-  }
-
-
-
-  function findPageByOffset(targetOffset) {
-    for (let i = 0; i < pages.length; i++) {
-      console.log(pages[i])
-        if (pages[i].offset === targetOffset) {
-            return pages[i].p;
-        }
-    }
-    return currentPage + 1;
-}
-
-function findOffsetByPage(targetPage) {
-  for (let i = 0; i < pages.length; i++) {
-      if (pages[i].p === targetPage) {
-          return pages[i].offset;
-      }
-  }
-  return 0;
-}
-
-
-useEffect(() => { console.log("pages ", pages)}, [pages])
+//   }
 
 
 
+//   function findPageByOffset(targetOffset) {
+//     for (let i = 0; i < pages.length; i++) {
+//       console.log(pages[i])
+//         if (pages[i].offset === targetOffset) {
+//             return pages[i].p;
+//         }
+//     }
+//     return currentPage + 1;
+// }
 
-  const handlePageChange = (p) => { 
-    console.log("target page ", p)  
+// function findOffsetByPage(targetPage) {
+//   for (let i = 0; i < pages.length; i++) {
+//       if (pages[i].p === targetPage) {
+//           return pages[i].offset;
+//       }
+//   }
+//   return 0;
+// }
 
-    if(p < currentPage){
-      setCurrentPage(p)
-      let targetOffset = pages.filter(page => page.p === p)[0].offset || 0
-      router.push(`/names?search=${searchRequest}&offset=${targetOffset}`)
-      //router.push("/names", {query: {search: searchRequest, offset: items.slice(-1)[0].registerIndex || 0}})
-      //window.location.reload();
-      if(p === 1){
-        fetchItems(searchRequest, targetOffset, true)
-      } else{
-        fetchItems(searchRequest, targetOffset)
-      }
+
+// useEffect(() => { console.log("pages ", pages)}, [pages])
+
+
+
+
+//   const handlePageChange = (p) => { 
+//     console.log("target page ", p)  
+
+//     if(p < currentPage){
+//       setCurrentPage(p)
+//       let targetOffset = pages.filter(page => page.p === p)[0].offset || 0
+//       router.push(`/names?search=${searchRequest}&offset=${targetOffset}`)
+//       //router.push("/names", {query: {search: searchRequest, offset: items.slice(-1)[0].registerIndex || 0}})
+//       //window.location.reload();
+//       if(p === 1){
+//         fetchItems(searchRequest, targetOffset, true)
+//       } else{
+//         fetchItems(searchRequest, targetOffset)
+//       }
   
 
-    } else{
-      const targetOffset = findOffsetByPage(p)
+//     } else{
+//       const targetOffset = findOffsetByPage(p)
 
-      console.log("looking for offset ", targetOffset)
+//       console.log("looking for offset ", targetOffset)
 
-      setCurrentPage(p)
-      updatePages(targetOffset)
+//       setCurrentPage(p)
+//       updatePages(targetOffset)
   
-      router.push(`/names?search=${searchRequest}&offset=${targetOffset}`)
+//       router.push(`/names?search=${searchRequest}&offset=${targetOffset}`)
 
-      if(p === 1){
-        fetchItems(searchRequest, targetOffset, true)
-      } else{
-        fetchItems(searchRequest, targetOffset)
-      }
-    }
+//       if(p === 1){
+//         fetchItems(searchRequest, targetOffset, true)
+//       } else{
+//         fetchItems(searchRequest, targetOffset)
+//       }
+//     }
 
 
-  }
+//   }
 
 
     return (
@@ -295,7 +317,7 @@ useEffect(() => { console.log("pages ", pages)}, [pages])
             <Search />
           </div>
 
-        <Pagination 
+        {/* <Pagination 
             showShadow 
             showControls 
             size={"sm"} 
@@ -307,7 +329,9 @@ useEffect(() => { console.log("pages ", pages)}, [pages])
               cursor:
                 "bg-gradient-to-b shadow-sm from-[#bd8eff] to-[#69e0ff] text-white font-bold",
             }}
-          />
+          /> */}
+          {/* {PaginationComponent()} */}
+          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, initial: true, loading}}/>
           
 
         </div>
