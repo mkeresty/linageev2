@@ -331,7 +331,7 @@ export default function Names() {
             }}
           /> */}
           {/* {PaginationComponent()} */}
-          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, initial: true, loading}}/>
+          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loading, path: "names", searchRequest}}/>
           
 
         </div>
