@@ -15,10 +15,12 @@ import Trie from "@/utils/trie";
 
 const names = [ "bob", "joe", "sue", "jane"];
 
-export default function SearchV2() {
+export default function SearchV2(props = {styles: "", initialStyles: "opacity-75 ", stylesList : "", initialStylesList: "h-0 opacity-75"}) {
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
     const width = useCurrentWidth();
+
+
 
     const [searchName, setSearchName] = useState("");
     const [prefix, setPrefix] = useState("");
@@ -40,8 +42,6 @@ export default function SearchV2() {
 
         try{
             // const bytes = lnr.utils.domainToBytes32(stringName)
-            // console.log(bytes);
-            console.log("searching for ", stringName)
             
             router.push(`/names/?search=${stringName}`)
             return
@@ -74,7 +74,6 @@ export default function SearchV2() {
       var found_words = myTrie.find(trie_prefix).sort((a, b) => {
         return a.length - b.length;
       });
-      console.log("found words ", found_words)
       var first_word = found_words[0];
       if (
         found_words.length !== 0 &&
@@ -115,12 +114,9 @@ export default function SearchV2() {
         }
       }, [width]);
 
-      useEffect(() => { 
-console.log("search name ", searchName)
-      }, [searchName]);
+
 
       useEffect(() => {
-        console.log("suggestions ", suggestions.length)
         if(suggestions.length > 0){
             setIsOpen(true);
         }
@@ -132,8 +128,8 @@ console.log("search name ", searchName)
     
   
     return (
-        <div className="w-full relative flex overflow-x-clip">
-            <div className={`${isOpen ? "rounded-b-none" : "opacity-75 "} transition ease-in-out delay-30 duration-50 w-full  flex flex-row items-center bg-white dark:bg-gray-800 rounded-xl pl-1 h-[50px] z-40`}>
+        <div className="w-full relative flex overflow-x-clip z-[300]">
+            <div className={`${isOpen ? "rounded-b-none" : props.initialStyles} ${props.styles} transition ease-in-out delay-30 duration-50 w-full  flex flex-row items-center bg-white dark:bg-gray-800 rounded-xl pl-1 h-[50px] z-40`}>
                     <form formnovalidate required={false} novalidate aria-hidden="true" onSubmit={handleSearch} className="w-full focus:outline-none focus:ring-0" >
                         <label htmlFor="search" className=" text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                         <input onChange={(e)=>onChange(e.target.value)} value={searchName} autoComplete="off"  type="search" id="search" className={"w-full p-y-2 bg-transparent border border-none focus:outline-none focus:ring-0 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-0 dark:placeholder-gray-400 dark:text-white z-40"} placeholder="Search"  />
@@ -147,7 +143,7 @@ console.log("search name ", searchName)
 <motion.div
         layout
         data-isopen={isOpen}
-        className={`${isOpen ? "shadow-lg mt-2" : "h-0 opacity-75 "}  rounded-b-xl bg-white dark:bg-gray-800 w-full flex flex-col mx-auto overflow-hidden absolute mt-[49px]` }
+        className={`${isOpen ? "shadow-lg mt-2" : props.initialStylesList} ${props.stylesList}  rounded-b-xl bg-white dark:bg-gray-800 w-full flex flex-col mx-auto overflow-hidden absolute mt-[49px]` }
         onClick={() => setIsOpen(!isOpen)}
       >
 

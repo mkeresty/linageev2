@@ -42,7 +42,7 @@ export default function NavbarExpandable() {
       <motion.div
         layout
         data-isopen={isOpen}
-        className={`${isOpen ? "rounded-b-[50px] shadow-lg" : "h-[50px] rounded-b-2xl "}  bg-white dark:bg-gray-800 w-full flex justify-between mx-auto overflow-hidden fixed  z-40` }
+        className={`${isOpen ? "rounded-b-[50px] shadow-lg" : "h-[50px] rounded-b-2xl "}  bg-white dark:bg-gray-800 w-full flex justify-between mx-auto overflow-hidden fixed  z-[500]` }
         onClick={() => setIsOpen(!isOpen)}
       >
 
@@ -64,7 +64,7 @@ export default function NavbarExpandable() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={click(link.path)}
-                    className={` hover:cursor-pointer w-full p-2 font-light text-center border-b border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white`}
+                    className={` hover:cursor-pointer w-full p-2 font-light text-center  border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black dark:hover:text-white`}
 
                 >
                     {link.name}
@@ -74,7 +74,7 @@ export default function NavbarExpandable() {
             
         )}
       </motion.div>
-      <div className="w-full flex justify-between mx-auto p-4 h-[50px] fixed  z-50">
+      <div className="w-full flex justify-between mx-auto p-4 h-[50px] fixed  z-[501]">
     <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse ">
     <img src="/lnr_icon_color.svg" className="mr-3 h-6 sm:h-9" alt="Linagee Logo" />
         <span className="self-center whitespace-nowrap text-xl font-thin font-semibold text-black dark:text-white">Linagee</span>

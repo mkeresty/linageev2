@@ -13,7 +13,7 @@ class Graph {
                 },
                 body: body,
                 next: {
-                    revalidate: 0
+                    revalidate: 1000
                 }
             },
             );

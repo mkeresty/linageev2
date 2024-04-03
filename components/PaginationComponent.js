@@ -29,7 +29,6 @@ export default function PaginationComponent({props}) {
       //setCurrentPage(targetPage);
       console.log("targetPage ", targetPage, " pages ", pages)
       let tOffset = findOffsetByPage(targetPage, pages);
-      console.log("tOffset ", tOffset)
       //setTargetOffset(tOffset);
       router.push(`/${path}?search=${searchRequest}&offset=${tOffset}`)
 
@@ -38,17 +37,14 @@ export default function PaginationComponent({props}) {
 
   function updatePages (offset, nextOffset) {
     let maxOffset = Math.max(...pages.map(page => page.offset));
-    console.log("maxOffset ", maxOffset)
 
     if(offset == 0){
-      console.log("offset == 0")
       setPages([{p: 1, offset: 0}, {p: 2, offset: nextOffset}])
       setCurrentPage(1)
       return
     }
 
     else if(offset < maxOffset){ 
-      console.log("offset < maxOffset")
       let pageNum = findPageByOffset(offset)
       setCurrentPage(pageNum)
       return
@@ -102,27 +98,6 @@ export default function PaginationComponent({props}) {
       updatePages(offset, nextOffset)
 
 
-      // if(initial === true && parseInt(offset) == 0){
-      //   setPages([{p: 1, offset: 0}, {p: 2, offset: nextOffset}])
-      //   setCurrentPage(1)
-      // }
-      // else if (initial === true && parseInt(offset) > 0 ){
-      //   //setPages([{p: 1, offset: 0}, {p: 2, offset: offset}, {p: 3, offset: nextOffset}])
-      //   updatePages(offset, nextOffset)
-      //   //setCurrentPage(2)
-      // }
-    //   else if (parseInt(offset) > 0 && pages.length > 1){
-    //     let prevPages = pages
-    //     setPages([...prevPages, {p: 2, offset: offset}, {p: 3, offset: nextOffset}])
-    //     setCurrentPage(2)
-    //   }
-    //   else {
-    //     console.log("setting pages")
-    //     const pageNum = findPageByOffset(offset)
-    //     let prevPages = pages
-    //     setPages([...prevPages, {p: pageNum, offset: nextOffset}])
-    //     setCurrentPage(pageNum)
-    //   }
 
     }
 
@@ -130,7 +105,6 @@ export default function PaginationComponent({props}) {
       // Initial setup
       if(!loading &&!(parseInt(currentOffset) == nextOffset) && nextOffset > parseInt(currentOffset)){
 
-        console.log("props ", props)
 
         manager(parseInt(currentOffset), nextOffset);
       }
@@ -138,14 +112,6 @@ export default function PaginationComponent({props}) {
       // Additional logic for conditional updates
       // ...
     }, [currentOffset, nextOffset, loading]); // Assuming these are relevant prop values
-
-    useEffect(() => {
-      // Initial setup
-      console.log("pages ", pages)
-    
-      // Additional logic for conditional updates
-      // ...
-    }, [pages]); // Assuming these are relevant prop values
 
 
 
@@ -160,6 +126,7 @@ export default function PaginationComponent({props}) {
     page={currentPage} 
     total={pages.length} 
     onChange={handlePageChange}
+    className=""
     classNames={{
       next: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff] hover:!opacity-30 hover:text-white hover:!scale-110",
       prev: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff] hover:!opacity-30 hover:text-white hover:!scale-110",

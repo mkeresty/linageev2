@@ -12,6 +12,7 @@ import { useLnrGetAddress } from '@linagee/lnr-ethers-react';
 import { current } from "tailwindcss/colors";
 // import {usePaginationHook} from "@/utils/hooks/usePaginationHook";
 import PaginationComponent from "@/components/PaginationComponent";
+import SearchV2 from "@/components/forms/SearchV2";
 
 const itemsnew = [
   {
@@ -158,11 +159,10 @@ export default function Names() {
   const searchParams = useSearchParams();
   const searchRequest = searchParams.get('search')
   const currentOffset = searchParams.get('offset') || 0;
-  const [loading, setLoading] = useState(false)
+  const [loadingPage, setLoadingPage] = useState(false)
   const [items, setItems] = useState([]);
 
 
-  //const { PaginationComponent, targetOffset } = usePaginationHook({props: {itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex || 0, initial: true}})
 
 
   async function fetchItems(search, offset, initial = false){ 
@@ -176,170 +176,32 @@ export default function Names() {
   }
 
   useEffect(() => { 
-    setLoading(true)
+    setLoadingPage(true)
     fetchItems(searchRequest, currentOffset, true)
-    setLoading(false)
+    setLoadingPage(false)
 
   }, [currentOffset, searchRequest])
 
 
-  // const [pages, setPages ] = useState([{p: 1, offset: 0}])
-  // const [currentPage, setCurrentPage] = useState(1)
 
-  // async function fetchItems(search, offset, initial = false){
-
-  //   if(search && search.length > 0){
-  //     let respItems = await callAPI("graph", JSON.stringify({field: 'domainUtf8', value: search, offset: offset}));
-  //     respItems = hydrateNames(respItems.results)
-  //     setItems(respItems)
-  //     console.log("items ", respItems)
-  //     if(respItems.length > 0 && initial === true && parseInt(offset) > 0){
-  //       console.log(" initial is not page 1")
-  //       updatePages(respItems.slice(-1)[0].registerIndex || 0, initial, [{p: 1, offset: 0}, {p: 2, offset: parseInt(offset)}])
-  //     } 
-  //     if(respItems.length > 0 && initial === true && parseInt(offset) == 0){
-  //       console.log(" initial is page 1")
-  //       updatePages(respItems.slice(-1)[0].registerIndex || 0, initial, [{p: 1, offset: 0}])
-  //     } 
-  //     else if (respItems.length > 0 ){
-  //       console.log(" standard page")
-  //       updatePages(respItems.slice(-1)[0].registerIndex || 0)
-
-  //     }
-  
-  //   }
-  // }
-
-  // useEffect(() => { 
-  //   fetchItems(searchRequest, currentOffset, true)
-
-  // }, [])
-
-//   function updatePages(offset, initial = false, pagesArg = undefined) {
-//     console.log("pagesArg entering update ", pagesArg, "pagesss ", pages)
-    
-
-//     let maxOffset = Math.max(...pages.map(page => page.offset));
-//     console.log("max offset ", maxOffset, "pages ", pages, "offset ", offset)
-
-//       if (offset > maxOffset ) {
-//         let prevPages = pages
-//         setPages([...prevPages, {p: prevPages.slice(-1)[0].p + 1, offset: offset}])
-//       }
-//       if (offset > maxOffset && initial === true, pagesArg) {
-//         console.log("prev pages ", pagesArg)
-//         setPages([...pagesArg, {p: pagesArg.slice(-1)[0].p + 1, offset: offset}])
-
-        
-//         console.log("set current  page ", currentPage)
-//       }
-//       if(parseInt(currentOffset) == 0){
-//         console.log("srtting restart")
-//         setCurrentPage(1)
-//       }
-//       if(initial === true && parseInt(currentOffset) > 0){
-        
-//         setCurrentPage(2)
-  
-//       }
-
-//   }
-
-
-
-//   function findPageByOffset(targetOffset) {
-//     for (let i = 0; i < pages.length; i++) {
-//       console.log(pages[i])
-//         if (pages[i].offset === targetOffset) {
-//             return pages[i].p;
-//         }
-//     }
-//     return currentPage + 1;
-// }
-
-// function findOffsetByPage(targetPage) {
-//   for (let i = 0; i < pages.length; i++) {
-//       if (pages[i].p === targetPage) {
-//           return pages[i].offset;
-//       }
-//   }
-//   return 0;
-// }
-
-
-// useEffect(() => { console.log("pages ", pages)}, [pages])
-
-
-
-
-//   const handlePageChange = (p) => { 
-//     console.log("target page ", p)  
-
-//     if(p < currentPage){
-//       setCurrentPage(p)
-//       let targetOffset = pages.filter(page => page.p === p)[0].offset || 0
-//       router.push(`/names?search=${searchRequest}&offset=${targetOffset}`)
-//       //router.push("/names", {query: {search: searchRequest, offset: items.slice(-1)[0].registerIndex || 0}})
-//       //window.location.reload();
-//       if(p === 1){
-//         fetchItems(searchRequest, targetOffset, true)
-//       } else{
-//         fetchItems(searchRequest, targetOffset)
-//       }
-  
-
-//     } else{
-//       const targetOffset = findOffsetByPage(p)
-
-//       console.log("looking for offset ", targetOffset)
-
-//       setCurrentPage(p)
-//       updatePages(targetOffset)
-  
-//       router.push(`/names?search=${searchRequest}&offset=${targetOffset}`)
-
-//       if(p === 1){
-//         fetchItems(searchRequest, targetOffset, true)
-//       } else{
-//         fetchItems(searchRequest, targetOffset)
-//       }
-//     }
-
-
-//   }
 
 
     return (
       <div className="flex flex-col justify-center items-center h-full p-5 mt-[60px] m-10">
         <BreadCrumbComponent paths={[{name: "Names", link: "/names"}]}/>
-        <div className="flex flex-row w-full items-end justify-between ">
-          <div className=" lg:w-[25rem] md:w-[20rem] opacity-75 mt-2">
-            <Search />
+        <div className="flex flex-row w-full items-center justify-between pt-3">
+          <div className=" lg:w-[25rem] md:w-[20rem] z-100">
+            <SearchV2 initialStyles={"opacity-100 border dark:border-gray-600 border-b-1"} styles={"border border-b-0 dark:border-gray-600"} initialStylesList={"h-0 opacity-100 border-0 dark:border-gray-600"} stylesList={"border border-t-0 dark:border-gray-600"}/>
           </div>
 
-        {/* <Pagination 
-            showShadow 
-            showControls 
-            size={"sm"} 
-            page={currentPage} 
-            total={pages.length} 
-            onChange={handlePageChange}
-            classNames={{
-              item: "shadown-sm",
-              cursor:
-                "bg-gradient-to-b shadow-sm from-[#bd8eff] to-[#69e0ff] text-white font-bold",
-            }}
-          /> */}
-          {/* {PaginationComponent()} */}
-          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loading, path: "names", searchRequest}}/>
+
+          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "names", searchRequest}}/>
           
 
         </div>
         
         <Grid items={items}/>
-        {/* {items && items?.length > 0 && (
-        <Pagination />
-          )} */}
+
       </div>
     );
   }
