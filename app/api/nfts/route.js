@@ -4,7 +4,7 @@ import Graph from '@/utils/Graph';
 
 async function getNfts(address, cursor){
     // OPENSEA
-    let endpoint = `chain/ethereum/account/${address}/nfts?limit=2${cursor ? `&next=${cursor}` : ""}`
+    let endpoint = `chain/ethereum/account/${address}/nfts?limit=18${cursor ? `&next=${cursor}` : ""}`
     // MORALIS
     //let endpoint = `${address}/nft?chain=eth&format=decimal&limit=18&exclude_spam=true&normalizeMetadata=true&media_items=false${cursor ? `&cursor=${cursor}` : ""}`
     try {

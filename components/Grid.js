@@ -1,6 +1,5 @@
 "use client";
 
-import CardComponent from "@/components/CardComponent";
 import CardWithImage from "@/components/CardWithImage";
 
 

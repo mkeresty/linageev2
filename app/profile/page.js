@@ -11,13 +11,14 @@ import { hydrateNames } from "@/utils/nameUtils";
 import { useLnrGetAddress, useLnrGetPrimaryName } from '@linagee/lnr-ethers-react';
 import PaginationComponent from "@/components/PaginationComponent";
 import { FaCircleCheck } from "react-icons/fa6";
+import AnimatedTabs from "@/components/AnimatedTabs";
 
 
 
 const queryClient = makeQueryClient();
 
 export default function Profile() {
-
+  const router = useRouter();
   const searchParams = useSearchParams();
   const searchRequest = searchParams.get('address')
   const currentOffset = searchParams.get('offset') || 0;
@@ -68,12 +69,20 @@ export default function Profile() {
       setLoadingPage(false)
     
 
-    }, [currentOffset, searchRequest])
+    }, [currentOffset, searchRequest, mode])
 
     const fetchMore = () => {
       setLoadingMore(true)
       fetchItems(searchRequest, currentOffset)
       setLoadingMore(false)
+    }
+
+    const [selected, setSelected] = useState(mode);
+    const handleSelection = (index) => {
+      console.log("selected", index)
+      setItems([])
+      setSelected(index)
+      router.push(`profile?address=${searchRequest}&mode=${index}`)
     }
 
 
@@ -93,6 +102,8 @@ export default function Profile() {
           )}
 
         </div>
+
+        <AnimatedTabs selected={selected} onSelectionChange={handleSelection}/>
 
          <Grid items={items} mode={mode}/>
 
