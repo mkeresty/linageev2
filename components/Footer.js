@@ -1,11 +1,7 @@
 "use client"
 
-import classes from "./Footer.module.css";
-import NavLink from "@/components/NavLink";
-import {AiOutlineGlobal, AiOutlinePlus, AiOutlineTwitter} from "react-icons/ai";
-import {RxDashboard} from "react-icons/rx";
+
 import Link from "next/link";
-import Image from "next/image";
 import { useTheme } from "next-themes";
 
 
