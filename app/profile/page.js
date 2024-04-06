@@ -20,7 +20,7 @@ const queryClient = makeQueryClient();
 export default function Profile() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const searchRequest = searchParams.get('address')
+  const searchRequest = searchParams.get('search')
   const currentOffset = searchParams.get('offset') || 0;
 
   const mode = searchParams.get('mode') || "names";
@@ -82,13 +82,13 @@ export default function Profile() {
       console.log("selected", index)
       setItems([])
       setSelected(index)
-      router.push(`profile?address=${searchRequest}&mode=${index}`)
+      router.push(`profile?search=${searchRequest}&mode=${index}`)
     }
 
 
 
     return (
-      <div className="flex flex-col justify-center items-center h-full p-5 mt-[60px] m-10">
+      <div className="flex flex-col justify-center items-center h-full py-5 lg:p-x-5 sm:p-x-2 mt-[60px] m-10">
         <BreadCrumbComponent paths={[{name: "Profile", link: "/names"}]}/>
         <div className="flex flex-row w-full items-end justify-between ">
           <div className="flex flex-col gap-y-2 mt-3">
@@ -97,8 +97,8 @@ export default function Profile() {
 
           </div>
 
-          {items && items?.search?.length > 0 && (
-          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "names", searchRequest}}/>
+          {mode == "names"  && (
+          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "profile", searchRequest}}/>
           )}
 
         </div>
@@ -117,13 +117,13 @@ export default function Profile() {
             Load More</button>
          )
                 }
-         {!next && mode == "nfts" && (
-         <div className="flex flex-row w-full items-center justify-center">
+         {(!next && mode == "nfts") || (items.length == 0) && !loadingPage && !loadingMore && (
+         <div className="flex flex-row w-full items-center justify-center mt-5">
           <FaCircleCheck className="mr-3"/> All items loaded
           </div>
         )
         }
-        {loadingPage && (
+        {(loadingPage || loadingMore) && (
          <div className="flex flex-row w-full items-center justify-center">
           <svg aria-hidden="true" class="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>

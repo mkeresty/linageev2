@@ -26,10 +26,10 @@ function Footer() {
                                 <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Resources</h2>
                                 <ul className="text-gray-600 dark:text-gray-400 font-medium">
                                     <li className="mb-4">
-                                        <a href={"https://forms.gle/MzLxBSnxDeWB8Lzt6"} target="_blank" className="hover:underline">List a Collection</a>
+                                        <a href={""} target="_blank" className="hover:underline">Docs</a>
                                     </li>
                                     <li>
-                                        <a href={"https://forms.gle/q2pJu8kzHahyAXyz7"} target="_blank" className="hover:underline">Minting Service</a>
+                                        <a href={""} target="_blank" className="hover:underline">Integrations</a>
                                     </li>
                                 </ul>
                             </div>
@@ -37,7 +37,7 @@ function Footer() {
                                 <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Contact us</h2>
                                 <ul className="text-gray-600 dark:text-gray-400 font-medium">
                                     <li className="mb-4">
-                                        <a href={"https://forms.gle/CtYKNFPJEikeTprY8"} target="_blank" className="hover:underline ">Questions</a>
+                                        <a href={""} target="_blank" className="hover:underline ">Questions</a>
                                     </li>
                                     <li className="mb-4">
                                         <Link href={"/faq"} className="hover:underline ">FAQ</Link>
@@ -48,10 +48,10 @@ function Footer() {
                                 <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Legal</h2>
                                 <ul className="text-gray-600 dark:text-gray-400 font-medium">
                                     <li className="mb-4">
-                                        <a href="/privacy" className="hover:underline">Privacy Policy</a>
+                                        <a href="" className="hover:underline">Privacy Policy</a>
                                     </li>
                                     <li>
-                                        <a href="/terms" className="hover:underline">Terms &amp; Conditions</a>
+                                        <a href="" className="hover:underline">Terms &amp; Conditions</a>
                                     </li>
                                 </ul>
                             </div>

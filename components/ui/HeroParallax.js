@@ -131,7 +131,7 @@ export const ProductCard = ({
       key={product.title}
       className="group/product h-96 w-96 relative flex-shrink-0 rounded-lg"
     >
-      <Link
+      <div
         href={product.link}
         className="block group-hover/product:shadow-2xl"
       >
@@ -142,7 +142,7 @@ export const ProductCard = ({
           className="overflow-hidden h-full w-full rounded-lg"
           alt={product.title}
         />
-      </Link>
+      </div>
       <div className="absolute inset-0 h-full w-96 rounded-lg opacity-0 bg-black pointer-events-none group-hover/product:opacity-75"></div>
       <h2 className="absolute p-10 bottom-4 left-4 opacity-0 rounded-lg text-white group-hover/product:opacity-75">
         {product.title}.og

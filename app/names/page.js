@@ -187,7 +187,7 @@ export default function Names() {
 
 
     return (
-      <div className="flex flex-col justify-center items-center h-full p-5 mt-[60px] m-10">
+      <div className="flex flex-col justify-center items-center h-full py-5 lg:p-x-5 sm:p-x-2 mt-[60px] m-10">
         <BreadCrumbComponent paths={[{name: "Names", link: "/names"}]}/>
         <div className="flex flex-row w-full items-center justify-between pt-3">
           <div className=" lg:w-[25rem] md:w-[20rem] z-100">
@@ -200,7 +200,7 @@ export default function Names() {
 
         </div>
         
-        <Grid items={items}/>
+        <Grid items={items} mode={"names"}/>
 
       </div>
     );

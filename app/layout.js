@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
         <Providers>
           {/* <Header /> */}
           <NavbarExpandable />
-          <div className={"mb-auto px-1 overflow-auto"}>
+          <div className={"mb-auto p-x-1 sm:p-x-0 overflow-auto"}>
             {children}
           </div>
           <Footer />
