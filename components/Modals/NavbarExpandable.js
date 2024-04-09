@@ -2,25 +2,33 @@
 
 import React, { use, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IoMdMenu , IoIosClose} from "react-icons/io";
 import { useRouter } from "next/navigation";
 import ThemeChanger from "@/components/ThemeChanger";
 import { useCurrentWidth } from "@/utils/hooks/useCurrentWidth";
 import Hamburger from 'hamburger-react'
+import { useWeb3Modal } from '@web3modal/ethers5/react'
+import { FaWallet, FaUser  } from "react-icons/fa";
+import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
-
-const links = [
-  { id: 1, name: "Home", path: "/" },
-  { id: 2, name: "Mint", path: "/mint" },
-  { id: 3, name: "Profile", path: "/profile" },
-  { id: 4, name: "About", path: "/about" },
-  { id: 5, name: "Explore", path: "/names" },
-];
 
 export default function NavbarExpandable() {
+    const { address, chainId, isConnected } = useWeb3ModalAccount()
+
+
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
     const width = useCurrentWidth();
+    const { open } = useWeb3Modal()
+
+    const links = [
+
+      { id: 2, name: "Names", path: "/names" },
+      { id: 3, name: "Mint", path: "/mint" },
+      { id: 4, name: "Portal", path: "/portal" },
+      { id: 5, name: "Profile", path: "/profile"},
+      { id: 6, name: "About", path: "/about" },
+    ];
+    
 
     const click = target => (e) => { // <-- consume target
         setTimeout(() => {
@@ -90,6 +98,13 @@ export default function NavbarExpandable() {
     </div>
     <div className="flex flex-row gap-x-2 items-center justify-center">
     <ThemeChanger />
+    <FaWallet  onClick={() => open()} className="ml-2 h-5 w-5 bold  hover:cursor-pointer hover:scale-105 hover:text-grey-300 dark:hover:text-grey-500 transition duration-100 ease-in-out"/>
+
+    {address && (
+    <FaUser onClick={()=>router.push(`/profile?search=${address}`)} className="ml-2 h-5 w-5 bold  hover:cursor-pointer hover:scale-105 hover:text-grey-300 dark:hover:text-grey-500 transition duration-100 ease-in-out"/>
+
+    )}
+    
     {width < 768 && (<Hamburger size={20} toggled={isOpen} toggle={setIsOpen} className={`block hover:cursor-pointer md:hidden `}/>)}
     {/* <Hamburger size={20} toggled={isOpen} toggle={setIsOpen} className={`block hover:cursor-pointer md:hidden `}/> */}
     {/* {!isOpen && (<IoMdMenu onClick={() => setIsOpen(!isOpen)} size={30} className={`block hover:cursor-pointer md:hidden `}/>)}

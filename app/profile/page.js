@@ -3,15 +3,16 @@
 import BreadCrumbComponent from "@/components/BreadCrumbComponent";
 import Grid from "@/components/Grid";
 import { Pagination } from "flowbite-react";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSearchParams, useRouter } from 'next/navigation'
 import Search from "@/components/forms/Search";
 import { callAPI, makeQueryClient} from "@/utils/utils";
-import { hydrateNames } from "@/utils/nameUtils";
-import { useLnrGetAddress, useLnrGetPrimaryName } from '@linagee/lnr-ethers-react';
+import { hydrateNames, resolveOrReturnOld } from "@/utils/nameUtils";
+import { useLnrGetAddress, useLnrGetPrimaryName, LnrConfig} from '@linagee/lnr-ethers-react';
 import PaginationComponent from "@/components/PaginationComponent";
 import { FaCircleCheck } from "react-icons/fa6";
 import AnimatedTabs from "@/components/AnimatedTabs";
+import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 
 
@@ -29,12 +30,45 @@ export default function Profile() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [items, setItems] = useState([]);
   const [next, setNext] = useState(undefined);
+  const [ogAddress, setOgAddress] = useState(undefined);
+  const [ogName, setOgName] = useState(undefined);
+
+  const { walletProvider } = useWeb3ModalProvider();
+
+  
+
+
+
+  
 
 
   const { name, error, hasError, loading } = useLnrGetPrimaryName(searchRequest);
 
   // TODO: Add error handling and loading
 
+  // useEffect(() => {
+  //   console.log("lnr ,", LnrConfig)
+  //   //resolveOrReturn(searchRequest)
+  // }, [searchRequest]);
+
+
+//   async function resolveOrReturn(nameAddress){
+//     if(ethers.utils.isAddress(nameAddress) == true){
+//         setOgAddress(nameAddress)
+//         let { name, error, hasError, loading } = useLnrGetPrimaryName(nameAddress);
+//         setOgName(name)
+//     }
+//     else{
+//         if(!nameAddress.endsWith(".og")){
+//           nameAddress = nameAddress + ".og"
+//         }
+//         const { address, error, hasError, loading } = useLnrGetAddress(nameAddress);
+//           if(ethers.utils.isAddress(address)){
+//               setOgAddress(address)
+//               setOgName(nameAddress)
+//           }
+// };
+// }
 
 
   async function fetchItems(search, offset = 0){ 
@@ -68,6 +102,7 @@ export default function Profile() {
       fetchItems(searchRequest, currentOffset)
       setLoadingPage(false)
     
+      //resolveOrReturnOld(walletProvider, searchRequest)
 
     }, [currentOffset, searchRequest, mode])
 
@@ -75,6 +110,8 @@ export default function Profile() {
       setLoadingMore(true)
       fetchItems(searchRequest, currentOffset)
       setLoadingMore(false)
+
+      
     }
 
     const [selected, setSelected] = useState(mode);
@@ -92,13 +129,13 @@ export default function Profile() {
         <BreadCrumbComponent paths={[{name: "Profile", link: "/names"}]}/>
         <div className="flex flex-row w-full items-end justify-between ">
           <div className="flex flex-col gap-y-2 mt-3">
-          <h2 className="text-2xl font-bold">{name}.og</h2>
-          <h3 className="text-md font-light">{(searchRequest && searchRequest.length > 4) ? searchRequest.slice(0,4) +"..."+searchRequest.slice(-4) : ""}</h3>
+          <h2 className="text-2xl font-bold">{name}</h2>
+          <h3 className="text-md font-light">{(ogAddress && ogAddress.length > 4) ? ogAddress.slice(0,4) +"..."+ogAddress.slice(-4) : ""}</h3>
 
           </div>
 
           {mode == "names"  && (
-          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "profile", searchRequest}}/>
+          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "profile", ogAddress}}/>
           )}
 
         </div>
