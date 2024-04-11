@@ -8,7 +8,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Search from "@/components/forms/Search";
 import { callAPI, makeQueryClient} from "@/utils/utils";
 import { hydrateNames } from "@/utils/nameUtils";
-import { useLnrGetAddress } from '@linagee/lnr-ethers-react';
+
 import { current } from "tailwindcss/colors";
 // import {usePaginationHook} from "@/utils/hooks/usePaginationHook";
 import PaginationComponent from "@/components/PaginationComponent";

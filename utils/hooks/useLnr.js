@@ -2,7 +2,6 @@
 
 import { useState, useContext, useEffect } from "react";
 import { ethers } from 'ethers';
-import { lnr } from '@linagee/lnr-ethers-react';
 
 
 

@@ -2,7 +2,6 @@
 
 import { IoSearch } from "react-icons/io5";
 import { useSearchParams, useRouter } from 'next/navigation'
-import { lnr } from '@linagee/lnr-ethers-react';
 import { use, useState, useEffect } from "react";
 import { ethers }from 'ethers';
 import dictionary from "@/utils/dictionary";
@@ -31,8 +30,7 @@ export default function Search(){
         }
 
         try{
-            // const bytes = lnr.utils.domainToBytes32(stringName)
-            // console.log(bytes);
+
             console.log("searching for ", stringName)
             
             router.push(`/names/?search=${stringName}`)

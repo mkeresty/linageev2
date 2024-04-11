@@ -6,6 +6,7 @@ import { lnr, getAddress, getPrimaryName} from '@linagee/lnr-ethers-react';
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
 export function hydrateNames(items){
+
     if(!items){
         return []
     }

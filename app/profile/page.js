@@ -3,17 +3,17 @@
 import BreadCrumbComponent from "@/components/BreadCrumbComponent";
 import Grid from "@/components/Grid";
 import { Pagination } from "flowbite-react";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, use } from "react";
 import { useSearchParams, useRouter } from 'next/navigation'
 import Search from "@/components/forms/Search";
 import { callAPI, makeQueryClient} from "@/utils/utils";
 import { hydrateNames, resolveOrReturnOld } from "@/utils/nameUtils";
-import { useLnrGetAddress, useLnrGetPrimaryName, LnrConfig} from '@linagee/lnr-ethers-react';
 import PaginationComponent from "@/components/PaginationComponent";
 import { FaCircleCheck } from "react-icons/fa6";
 import AnimatedTabs from "@/components/AnimatedTabs";
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
-
+import LNR from "@/utils/lnrethers"
+import { ethers } from 'ethers';
 
 
 const queryClient = makeQueryClient();
@@ -32,9 +32,43 @@ export default function Profile() {
   const [next, setNext] = useState(undefined);
   const [ogAddress, setOgAddress] = useState(undefined);
   const [ogName, setOgName] = useState(undefined);
+  const [name, setName] = useState(undefined)
 
   const { walletProvider } = useWeb3ModalProvider();
 
+
+  const testLnr = async () => {
+        let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
+        let ethersSigner = await ethersProvider.getSigner()
+        let lnr = undefined
+
+        try{
+        if(ethersSigner){
+          lnr = new LNR(ethers, ethersSigner);
+            
+        } else if(ethersProvider) {
+          lnr = new LNR(ethers, ethersProvider);
+        }
+        else{
+          console.log("no provider")
+        }
+
+        let name = await lnr.lookupAddress(searchRequest)
+        if(name){
+          setName(name)
+        }
+
+      } catch(e){
+        console.log("error", e)
+      }
+
+    
+  }
+
+  useEffect(() => {
+    testLnr()
+  }, [])
+
   
 
 
@@ -42,7 +76,6 @@ export default function Profile() {
   
 
 
-  const { name, error, hasError, loading } = useLnrGetPrimaryName(searchRequest);
 
   // TODO: Add error handling and loading
 

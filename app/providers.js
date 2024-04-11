@@ -1,7 +1,7 @@
 'use client'
 
 import {ThemeProvider} from 'next-themes'
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import {ethers} from "ethers";
 import {NextUIProvider} from "@nextui-org/react";
 import { LnrConfigProvider } from '@linagee/lnr-ethers-react';
@@ -11,6 +11,7 @@ import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/re
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
 import ConnectModal from '@/components/Modals/Connect'
 import { useWeb3Modal } from '@web3modal/ethers5/react'
+import { set } from 'zod';
 
 const rpcNodes = [
     //"https://cloudflare-eth.com",
@@ -50,55 +51,76 @@ async function connectToProvider() {
 export function Providers({children}) {
     const [mounted, setMounted] = useState(false);
     const {isOpen, onClose, onOpen} = useDisclosure();
-    const { address, chainId, isConnected } = useWeb3ModalAccount()
-    const { walletProvider } = useWeb3ModalProvider();
     
 
     const [provider, setProvider] = useState({provider: undefined});
 
     useEffect(() => {
         setMounted(true);
-        //getProvider();
     }, [])
 
 
-    useEffect(() => {
-        console.log("wallet provider ", walletProvider)
 
-        if (walletProvider) {
-            const ethersProvider = new ethers.providers.Web3Provider(walletProvider)
-            console.log("provider ", ethersProvider)
-            setProvider({provider: ethersProvider})
+    const { walletProvider } = useWeb3ModalProvider()
+    const { address, chainId, isConnected } = useWeb3ModalAccount()
+
+
+
+    const getProvider = async () => { 
+        let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
+        if(provider){
+          console.log("provider", ethersProvider  )
+          setProvider({provider: ethersProvider})
         } else{
-            const p = new ethers.providers.AlchemyProvider("homestead",  process.env.NEXT_PUBLIC_ALCHEMY_API_KEY)
-            setProvider({provider: p})
+          console.log("no provider")
+        
         }
-    }, [walletProvider])
+
+    }
+
+    const getSigner = async () => { 
+        // console.log("get signer")
+        // let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
+        // console.log("ethers provider", ethersProvider)
+        // let ethersSigner = undefined
+        // if(ethersProvider){
+        //     ethersSigner = await ethersProvider.getSigner()
+        // }
+        
+        // if(ethersSigner){
+        //     //const signature = await ethersSigner?.signMessage('Hello Web3Modal Ethers')
+        //     //console.log(signature)
+        //     console.log("signer", ethersSigner)
+
+        //     setProvider({provider: ethersSigner})
+
+        // } else if (ethersProvider) {
+
+        //     setProvider({provider: ethersProvider})
+        //     console.log("no signer", ethersProvider)
+        // }
+        // else{
+        //   console.log("no provider")
+        // }
+
+    }
+
+    // useEffect(() => {
+    //     getSigner()
+    // }, [])
 
 
-    //const provider = connectToProvider();
+    // useEffect(() => {
+    //     getProvider()
+    
+    // },[])
 
     const config = {
-        provider: new ethers.providers.AlchemyProvider("homestead",  process.env.NEXT_PUBLIC_ALCHEMY_API_KEY)
+        provider: undefined,
     }
 
 
 
-    // async function getProvider() {
-    //     if (!isConnected){ 
-    //         const { open } = useWeb3Modal();
-    //         console.log("not connected")
-    //         open()
-
-    //     }
-    
-    //     const ethersProvider = new ethers.providers.Web3Provider(walletProvider)
-    //     console.log("provider ", ethersProvider)
-    //     //const signer = await ethersProvider.getSigner()
-
-    //     return({provider: ethersProvider})
-
-    //   }
 
 
     if (!mounted) return null;
@@ -106,12 +128,10 @@ export function Providers({children}) {
     return (
         <ThemeProvider enableSystem={true} attribute="class">
         <NextUIProvider>
-            <Web3Modal>
-            <LnrConfigProvider config={provider}>
-                <ConnectModal isOpen={isOpen} onClose={onClose} />
+    
+
                 {children}
-            </LnrConfigProvider>
-            </Web3Modal>
+     
         </NextUIProvider>
         </ThemeProvider>
     );
