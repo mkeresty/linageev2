@@ -9,11 +9,14 @@ import Hamburger from 'hamburger-react'
 // import { useWeb3Modal } from '@web3modal/ethers5/react'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { FaWallet, FaUser  } from "react-icons/fa";
-import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
+//import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
+
+import { useAccount } from 'wagmi'
 
 
 export default function NavbarExpandable() {
-    const { address, chainId, isConnected } = useWeb3ModalAccount()
+    const { address, isConnected, isDisconnected } = useAccount()
+    console.log("nav ", address, isConnected, isDisconnected)
 
 
     const [isOpen, setIsOpen] = useState(false);
@@ -86,23 +89,23 @@ export default function NavbarExpandable() {
       <div className="w-full flex justify-between mx-auto p-4 h-[50px] fixed  z-[501]">
     <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse ">
     <img src="/lnr_icon_color.svg" className="mr-3 h-6 sm:h-9" alt="Linagee Logo" />
-        <span className="self-center whitespace-nowrap text-xl font-thin font-semibold text-black dark:text-white">Linagee</span>
+        <span className="self-center whitespace-nowrap text-xl font-thin font-semibold text-black dark:text-white hover:scale-105 hover:text-gray-500 dark:hover:text-gray-500 transition duration-100 ease-in-out">Linagee</span>
 
     </a>
 
     <div className="hidden w-full md:block md:w-auto" id="navbar-default">
       <ul className="font-light flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 ">
         {links.map((link) => (
-            <li key={link.id} ><a href={link.path}>{link.name}</a></li>
+            <li key={link.id} className="hover:scale-105 hover:text-gray-500 dark:hover:text-gray-500 transition duration-100 ease-in-out"><a href={link.path}>{link.name}</a></li>
         ))}
       </ul>
     </div>
     <div className="flex flex-row gap-x-2 items-center justify-center">
     <ThemeChanger />
-    <FaWallet  onClick={() => open()} className="ml-2 h-5 w-5 bold  hover:cursor-pointer hover:scale-105 hover:text-grey-300 dark:hover:text-grey-500 transition duration-100 ease-in-out"/>
+    <FaWallet  onClick={() => open()} className="ml-2 h-4 w-4 text-gray-700 dark:text-white hover:cursor-pointer hover:scale-105 hover:text-gray-500 dark:hover:text-gray-500 transition duration-100 ease-in-out"/>
 
-    {address && (
-    <FaUser onClick={()=>router.push(`/profile?search=${address}`)} className="ml-2 h-5 w-5 bold  hover:cursor-pointer hover:scale-105 hover:text-grey-300 dark:hover:text-grey-500 transition duration-100 ease-in-out"/>
+    {!isDisconnected && address && (
+    <FaUser onClick={()=>router.push(`/profile?search=${address}`)} className="ml-2 h-4 w-4 text-gray-700 dark:text-white hover:cursor-pointer hover:scale-105 hover:text-gray-500 dark:hover:text-gray-500 transition duration-100 ease-in-out"/>
 
     )}
     

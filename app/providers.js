@@ -3,6 +3,7 @@
 import {ThemeProvider} from 'next-themes'
 import {use, useEffect, useState} from "react";
 import {ethers} from "ethers";
+import { Toaster } from 'react-hot-toast';
 import {NextUIProvider} from "@nextui-org/react";
 import { LnrConfigProvider } from '@linagee/lnr-ethers-react';
 import { Web3Modal } from '@/context/web3modal';
@@ -11,7 +12,7 @@ import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/re
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
 import ConnectModal from '@/components/Modals/Connect'
 import { useWeb3Modal } from '@web3modal/ethers5/react'
-import { set } from 'zod';
+import { useTheme } from 'next-themes';
 
 const rpcNodes = [
     //"https://cloudflare-eth.com",
@@ -125,9 +126,15 @@ export function Providers({children}) {
 
     if (!mounted) return null;
 
+
+
+
     return (
         <ThemeProvider enableSystem={true} attribute="class">
         <NextUIProvider>
+            <Toaster 
+                position="bottom-center"
+            />
     
 
                 {children}

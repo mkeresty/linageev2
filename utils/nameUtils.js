@@ -1,9 +1,13 @@
 "use client";
 
 import { ethers } from 'ethers';
-import { useContext } from 'react';
+
 import { lnr, getAddress, getPrimaryName} from '@linagee/lnr-ethers-react';
+import { toast } from 'react-hot-toast';
+import LNR from "@/utils/lnrethers";
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+
+
 
 export function hydrateNames(items){
 
@@ -50,25 +54,43 @@ export function isValidBytes(bytes){
 
 
 export async function resolveOrReturnOld(walletProvider, nameAddress){
-console.log("lnr ", lnr)
-console.log("wallet provider in utils", walletProvider)
-if(walletProvider){
-    const ethersProvider = new ethers.providers.Web3Provider(walletProvider)
-    console.log("provider in utils", ethersProvider)
+
+    if(walletProvider){
+        const ethersProvider = new ethers.providers.Web3Provider(walletProvider)
+        console.log("provider in utils", ethersProvider)
+    }
+
+        if(ethers.utils.isAddress(nameAddress) == true){
+            //let name = await lnr.getPrimaryName(nameAddress);
+            //console.log("name", name)
+    
+        }
+        else{
+            if(!nameAddress.endsWith(".og")){
+            nameAddress = nameAddress + ".og"
+            }
+            // const address = await lnr.getAddress(nameAddress);
+            //   if(ethers.utils.isAddress(address)){
+            //       //setOgName(nameAddress)
+            //   }
+    };
+    }
+
+
+export async function callLnrClass(provider, functionName, ...args){
+
+    const lnr = new LNR(ethers, provider);
+
+
+    try {
+  
+        const response = await lnr[functionName](...args);
+        return response; // Return the successful response
+      } catch (error) {
+        toast.error(error.message); // Display error notification using react-hot-toast
+        throw error; // Re-throw the error for further handling
+      }
+
+
 }
 
-    if(ethers.utils.isAddress(nameAddress) == true){
-        //let name = await lnr.getPrimaryName(nameAddress);
-        //console.log("name", name)
-   
-    }
-    else{
-        if(!nameAddress.endsWith(".og")){
-          nameAddress = nameAddress + ".og"
-        }
-        // const address = await lnr.getAddress(nameAddress);
-        //   if(ethers.utils.isAddress(address)){
-        //       //setOgName(nameAddress)
-        //   }
-};
-}

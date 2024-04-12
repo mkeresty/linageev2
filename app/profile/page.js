@@ -7,13 +7,16 @@ import { useState, useEffect, useContext, use } from "react";
 import { useSearchParams, useRouter } from 'next/navigation'
 import Search from "@/components/forms/Search";
 import { callAPI, makeQueryClient} from "@/utils/utils";
-import { hydrateNames, resolveOrReturnOld } from "@/utils/nameUtils";
+import { callLnrClass, hydrateNames, resolveOrReturnOld } from "@/utils/nameUtils";
 import PaginationComponent from "@/components/PaginationComponent";
 import { FaCircleCheck } from "react-icons/fa6";
 import AnimatedTabs from "@/components/AnimatedTabs";
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import LNR from "@/utils/lnrethers"
 import { ethers } from 'ethers';
+import { call } from "viem/actions";
+import { useLnrCall } from "@/utils/hooks/useLnr";
+
 
 
 const queryClient = makeQueryClient();
@@ -32,42 +35,48 @@ export default function Profile() {
   const [next, setNext] = useState(undefined);
   const [ogAddress, setOgAddress] = useState(undefined);
   const [ogName, setOgName] = useState(undefined);
-  const [name, setName] = useState(undefined)
+  const [nameOld, setName] = useState(undefined)
 
-  const { walletProvider } = useWeb3ModalProvider();
+  // const { walletProvider } = useWeb3ModalProvider();
+
+  const { data: name, loading, error } = useLnrCall("lookupAddress", searchRequest);
 
 
-  const testLnr = async () => {
-        let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
-        let ethersSigner = await ethersProvider.getSigner()
-        let lnr = undefined
+  // const testLnr = async () => {
+        
+  //       let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
+  //       let ethersSigner = await ethersProvider.getSigner()
+  //       let lnr = undefined
 
-        try{
-        if(ethersSigner){
-          lnr = new LNR(ethers, ethersSigner);
+  //       try{
+  //       if(ethersSigner){
+  //         lnr = new LNR(ethers, ethersSigner);
             
-        } else if(ethersProvider) {
-          lnr = new LNR(ethers, ethersProvider);
-        }
-        else{
-          console.log("no provider")
-        }
+  //       } else if(ethersProvider) {
+  //         lnr = new LNR(ethers, ethersProvider);
+  //       }
+  //       else{
+  //         console.log("no provider")
+  //       }
 
-        let name = await lnr.lookupAddress(searchRequest)
-        if(name){
-          setName(name)
-        }
+  //       let name = await lnr.lookupAddress(searchRequest)
+  //       if(name){
+  //         setName(name)
+  //       }
 
-      } catch(e){
-        console.log("error", e)
-      }
+  //       let x = await callLnrClass(ethersProvider, "lookupAddress", searchRequest)
+  //       console.log("x", x)
+
+  //     } catch(e){
+  //       console.log("error", e)
+  //     }
 
     
-  }
+  // }
 
-  useEffect(() => {
-    testLnr()
-  }, [])
+  // useEffect(() => {
+  //   testLnr()
+  // }, [])
 
   
 

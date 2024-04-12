@@ -30,8 +30,6 @@ export default function Search(){
         }
 
         try{
-
-            console.log("searching for ", stringName)
             
             router.push(`/names/?search=${stringName}`)
             return
@@ -64,7 +62,6 @@ export default function Search(){
       var found_words = myTrie.find(trie_prefix).sort((a, b) => {
         return a.length - b.length;
       });
-      console.log("found words ", found_words)
       var first_word = found_words[0];
       if (
         found_words.length !== 0 &&

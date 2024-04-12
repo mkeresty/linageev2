@@ -25,11 +25,12 @@ export default function AnimatedTabs(props) {
             selectedKey={selected}
             onSelectionChange={onSelectionChange}
             classNames={{
-                next: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff]  hover:text-white ",
-                prev: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff]  hover:text-white ",
+                next: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff]  !text-white hover:text-white ",
+                prev: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff]  !text-white hover:text-white ",
                 item: "hover:!bg-gradient-to-b text-white  hover:!from-[#bd8eff] hover:!to-[#69e0ff]  hover:text-white ",
+                tabContent: "group-data-[selected=true]:text-white",
                 cursor:
-                  "text-white bg-gradient-to-b !shadow-md dark:!shadow-blue-500/[0.5] from-[#bd8eff] to-[#69e0ff] text-white font-bold hover:!border-0 ",
+                  "!text-white bg-gradient-to-b !shadow-md dark:!shadow-blue-500/[0.5] from-[#bd8eff] to-[#69e0ff] font-bold hover:!border-0 ",
               }}>
                 {tabs.map((tab) => (
                   <Tab key={tab.id} title={tab.label}>
