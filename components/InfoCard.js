@@ -6,18 +6,16 @@ import { useEffect, useState } from "react";
 
 
 
-export default function InfoCard({item, isFlipped}) {
+export default function InfoCard({item, metadata_url, isFlipped}) {
     const [metadata, setMetadata] = useState()
 
 
     async function getMetadata(){
-        if(item && item.metadata_url && isFlipped && !metadata){
-            console.log("gettingggg")
+        if(metadata_url && isFlipped && !metadata){
 
             try{
-                let metadata = await fetch(item.metadata_url)
+                let metadata = await fetch(metadata_url)
                 metadata = await metadata.json()
-                console.log("metadata", metadata)
                 setMetadata(metadata)
             } catch(e){
                 //console.log("error", e)
@@ -28,7 +26,7 @@ export default function InfoCard({item, isFlipped}) {
 
     useEffect(() => { 
         getMetadata()
-    },[item, isFlipped])
+    },[item, metadata_url, isFlipped])
 
 
     return(

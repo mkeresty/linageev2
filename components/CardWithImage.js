@@ -14,6 +14,11 @@ export default function CardWithImage({item, mode}) {
   const [hasError, setHasError] = useState(false);
   let name = item.name || item?.collection + item?.identifier;
 
+  let img_url = item?.contract == "0x2cc8342d7c8bff5a213eb2cde39de9a59b3461a7" ? `http://api.linagee.vision:8080/image/${item?.identifier}` : item.image_url
+
+  let metadata_url = item?.contract == "0x2cc8342d7c8bff5a213eb2cde39de9a59b3461a7" ? `http://api.linagee.vision:8080/${item?.identifier}` : item.metadata_url
+
+
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleFlip = () => {
@@ -54,7 +59,7 @@ export default function CardWithImage({item, mode}) {
         ) : (
           <img
             id="thumbnail"
-            src={item.image_url}
+            src={img_url}
             onClick={handleFlip}
             onError={e => {
               e.currentTarget.src = "/error.svg"
@@ -72,9 +77,9 @@ export default function CardWithImage({item, mode}) {
       
       <BackCard isCardFlipped={isFlipped}>
 
-        <div onClick={handleFlip} className={`bg-gray-50 dark:bg-gray-800 w-full h-[198px] dark:border-white/[0.2] border-black/[0.1] border overflow-auto object-cover rounded-xl group-hover/card:shadow-xl flex flex-col items-center justify-center `}>
+        <div onClick={handleFlip} className={`bg-gray-50 dark:bg-gray-800 w-full max-w-[198px] h-[198px] dark:border-white/[0.2] border-black/[0.1] border overflow-auto object-cover rounded-xl group-hover/card:shadow-xl flex flex-col items-center justify-center `}>
             <Suspense fallback={<p>Loading...</p>}>
-            <InfoCard item={item} isFlipped={isFlipped}/>
+            <InfoCard item={item} metadata_url={metadata_url} isFlipped={isFlipped}/>
             </Suspense>
             
           </div>

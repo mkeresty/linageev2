@@ -41,6 +41,9 @@ export function useLnrProfile(addressOrName) {
 
   useEffect(() => {
     const fetchData = async () => {
+      if(!walletProvider){
+        return
+      }
       let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
       let ethersSigner = ethersProvider.getSigner()
       let provider = undefined
