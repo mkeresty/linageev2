@@ -25,7 +25,7 @@ export default function Profile() {
   const [loadingPage, setLoadingPage] = useState(false) 
   const [loadingMore, setLoadingMore] = useState(false)
   const [items, setItems] = useState([]);
-  const [next, setNext] = useState(undefined);
+  const [nextPage, setNextPage] = useState(undefined);
 
   const { name: name, address: address, loading: loading, error: error } = useLnrProfile(searchRequest);
   console.log("profile", name, address, loading, error)
@@ -42,18 +42,18 @@ export default function Profile() {
 
       }
     else if(search && search.length > 0 && mode == "nfts"){
-      let respItems = await callAPI("nfts", JSON.stringify({field: 'owner', value: search, cursor: next}));
+      let respItems = await callAPI("nfts", JSON.stringify({field: 'owner', value: search, cursor: nextPage}));
       if(respItems && respItems.results && respItems.results.nfts){
         console.log("items nfts", respItems)
         setItems([...items, ...respItems.results.nfts])
-        if(respItems.results.next){
-          setNext(respItems.results.next)
+        if(respItems.results.nextPage){
+          setNextPage(respItems.results.nextPage)
         } else {
-          setNext(undefined)
+          setNextPage(undefined)
         }
       } else{
         //setItems([])
-        //setNext(undefined)
+        //setNextPage(undefined)
       }
       }
 }
@@ -97,7 +97,7 @@ export default function Profile() {
           </div>
 
           {mode == "names"  && (
-          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "profile", address}}/>
+          <PaginationComponent props = {{itemLength: items.length || 0, nextPageOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "profile", address}}/>
           )}
 
         </div>
@@ -125,7 +125,7 @@ export default function Profile() {
 
 
 
-         {next && mode == "nfts" && (
+         {nextPage && mode == "nfts" && (
               <button type="button" className="py-2.5 px-5 me-2 mb-2 flex flex-row items-center text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={fetchMore}>
                 {loadingMore &&     
                 <svg aria-hidden="true" className="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -135,7 +135,7 @@ export default function Profile() {
             Load More</button>
          )
                 }
-         {/* {(!next && mode == "nfts") || (items.length == 0) && !loadingPage && !loadingMore && (
+         {/* {(!nextPage && mode == "nfts") || (items.length == 0) && !loadingPage && !loadingMore && (
          <div className="flex flex-row w-full items-center justify-center mt-5">
           <FaCircleCheck className="mr-3"/> All items loaded
           </div>
