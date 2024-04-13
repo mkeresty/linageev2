@@ -40,7 +40,7 @@ function Footer() {
                                         <p onClick={()=>{navigator.clipboard.writeText('linagee.vision@gmail.com'); toast.success("Linagee email to clipboard.")}}  className="hover:underline hover:cursor-pointer">Questions</p>
                                     </li>
                                     <li className="mb-4">
-                                        <Link href={"/faq"} className="hover:underline ">FAQ</Link>
+                                        <Link href={"/"} className="hover:underline ">FAQ</Link>
                                     </li>
                                 </ul>
                             </div>
