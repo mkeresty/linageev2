@@ -15,7 +15,8 @@ import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/re
 import LNR from "@/utils/lnrethers"
 import { ethers } from 'ethers';
 import { call } from "viem/actions";
-import { useLnrCall } from "@/utils/hooks/useLnr";
+import { useLnrCall, useLnrProfile } from "@/utils/hooks/useLnr";
+import { DNA } from "react-loader-spinner";
 
 
 
@@ -29,88 +30,13 @@ export default function Profile() {
 
   const mode = searchParams.get('mode') || "names";
 
-  const [loadingPage, setLoadingPage] = useState(false)
+  const [loadingPage, setLoadingPage] = useState(false) 
   const [loadingMore, setLoadingMore] = useState(false)
   const [items, setItems] = useState([]);
   const [next, setNext] = useState(undefined);
-  const [ogAddress, setOgAddress] = useState(undefined);
-  const [ogName, setOgName] = useState(undefined);
-  const [nameOld, setName] = useState(undefined)
 
-  // const { walletProvider } = useWeb3ModalProvider();
+  const { name: name, address: address, loading: loading, error: error } = useLnrProfile(searchRequest);
 
-  const { data: name, loading, error } = useLnrCall("lookupAddress", searchRequest);
-
-
-  // const testLnr = async () => {
-        
-  //       let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
-  //       let ethersSigner = await ethersProvider.getSigner()
-  //       let lnr = undefined
-
-  //       try{
-  //       if(ethersSigner){
-  //         lnr = new LNR(ethers, ethersSigner);
-            
-  //       } else if(ethersProvider) {
-  //         lnr = new LNR(ethers, ethersProvider);
-  //       }
-  //       else{
-  //         console.log("no provider")
-  //       }
-
-  //       let name = await lnr.lookupAddress(searchRequest)
-  //       if(name){
-  //         setName(name)
-  //       }
-
-  //       let x = await callLnrClass(ethersProvider, "lookupAddress", searchRequest)
-  //       console.log("x", x)
-
-  //     } catch(e){
-  //       console.log("error", e)
-  //     }
-
-    
-  // }
-
-  // useEffect(() => {
-  //   testLnr()
-  // }, [])
-
-  
-
-
-
-  
-
-
-
-  // TODO: Add error handling and loading
-
-  // useEffect(() => {
-  //   console.log("lnr ,", LnrConfig)
-  //   //resolveOrReturn(searchRequest)
-  // }, [searchRequest]);
-
-
-//   async function resolveOrReturn(nameAddress){
-//     if(ethers.utils.isAddress(nameAddress) == true){
-//         setOgAddress(nameAddress)
-//         let { name, error, hasError, loading } = useLnrGetPrimaryName(nameAddress);
-//         setOgName(name)
-//     }
-//     else{
-//         if(!nameAddress.endsWith(".og")){
-//           nameAddress = nameAddress + ".og"
-//         }
-//         const { address, error, hasError, loading } = useLnrGetAddress(nameAddress);
-//           if(ethers.utils.isAddress(address)){
-//               setOgAddress(address)
-//               setOgName(nameAddress)
-//           }
-// };
-// }
 
 
   async function fetchItems(search, offset = 0){ 
@@ -141,12 +67,12 @@ export default function Profile() {
 
     useEffect(() => { 
       setLoadingPage(true)
-      fetchItems(searchRequest, currentOffset)
+      fetchItems(address, currentOffset)
       setLoadingPage(false)
     
       //resolveOrReturnOld(walletProvider, searchRequest)
 
-    }, [currentOffset, searchRequest, mode])
+    }, [currentOffset, address, mode])
 
     const fetchMore = () => {
       setLoadingMore(true)
@@ -172,17 +98,27 @@ export default function Profile() {
         <div className="flex flex-row w-full items-end justify-between ">
           <div className="flex flex-col gap-y-2 mt-3">
           <h2 className="text-2xl font-bold">{name}</h2>
-          <h3 className="text-md font-light">{(ogAddress && ogAddress.length > 4) ? ogAddress.slice(0,4) +"..."+ogAddress.slice(-4) : ""}</h3>
+          <h3 className="text-md font-light">{(address && address.length > 4) ? address.slice(0,4) +"..."+address.slice(-4) : ""}</h3>
 
           </div>
 
           {mode == "names"  && (
-          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "profile", ogAddress}}/>
+          <PaginationComponent props = {{itemLength: items.length || 0, nextOffset: items.slice(-1)[0]?.registerIndex, loadingPage, path: "profile", address}}/>
           )}
 
         </div>
 
         <AnimatedTabs selected={selected} onSelectionChange={handleSelection}/>
+
+        <DNA
+        visible={loading || loadingPage || loadingMore}
+        height="80"
+        width="80"
+        ariaLabel="dna-loading"
+        wrapperStyle={{}}
+        wrapperClass="dna-wrapper"
+        />
+
 
          <Grid items={items} mode={mode}/>
 
