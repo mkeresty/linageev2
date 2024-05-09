@@ -1,6 +1,18 @@
 "use client"
 
-export default function LnrSvg({item, classVars}) { 
+import {useRouter} from 'next/navigation'
+
+export default function LnrSvg({item, classVars, mode = undefined}) { 
+
+  const router = useRouter();
+
+  const handleClick = () => {
+    console.log("clicked", mode)
+    if(mode == "names"){
+      router.push(`/name/${item.domainBytecode}`)
+    }
+
+  }
 
     let color1 = ""
     let color2 = ""
@@ -46,7 +58,7 @@ export default function LnrSvg({item, classVars}) {
 
 
 return(
-    <div className={classVars} dangerouslySetInnerHTML={{__html: svg}}></div>
+    <div onClick={handleClick} className={classVars} dangerouslySetInnerHTML={{__html: svg}}></div>
 )
 
 

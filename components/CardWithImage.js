@@ -8,9 +8,11 @@ import { IoArrowRedoSharp } from "react-icons/io5";
 import LnrSvg from "@/components/LnrSvg";
 import FlipCard, { FrontCard, BackCard } from "@/components/FlipCard";
 import InfoCard from "@/components/InfoCard";
+import {useRouter} from "next/navigation"
 
 
 export default function CardWithImage({item, mode}) {
+  const router = useRouter();
   const [hasError, setHasError] = useState(false);
   let name = item.name || item?.collection + item?.identifier;
 
@@ -23,15 +25,24 @@ export default function CardWithImage({item, mode}) {
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
+    
+   }
+
+   const routeName = () =>{
+    console.log("route name", item)
+    if(mode == "names"){
+      router.push(`/names/${item.domainBytecode}`)
+    }
    }
 
 
   return (
-    <CardContainer   className="inter-var sm:w-[17rem] px-3 w-full h-full">
-    <CardBody  className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-blue-500/[0.3] dark:bg-gray-800 dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl  p-6 border  hover:cursor-pointer">
+    <CardContainer className="inter-var sm:w-[17rem] px-3 w-full h-full">
+    <CardBody   className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-blue-500/[0.3] dark:bg-gray-800 dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl  p-6 border  hover:cursor-pointer">
       <CardItem
         translateZ="50"
         className="text-lg font-bold text-neutral-600 dark:text-white"
+
       >
           {mode == "names" ? (
             <>
@@ -54,7 +65,7 @@ export default function CardWithImage({item, mode}) {
       <FrontCard isCardFlipped={isFlipped}>
 
         {mode == "names" ? (
-        <LnrSvg item={item} classVars={"w-full h-auto object-cover overflow-hidden rounded-xl group-hover/card:shadow-xl"} />
+        <LnrSvg item={item} classVars={"w-full h-auto object-cover overflow-hidden rounded-xl group-hover/card:shadow-xl"} mode={mode}/>
 
         ) : (
           <img

@@ -70,7 +70,7 @@ export default function Profile() {
 
     const fetchMore = () => {
       setLoadingMore(true)
-      fetchItems(searchRequest, currentOffset)
+      fetchItems(searchRequest, currentOffset) 
       setLoadingMore(false)
 
       

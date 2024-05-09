@@ -6,7 +6,7 @@ import {Pagination} from "@nextui-org/react";
 import { useState, useEffect, use } from "react";
 import { useSearchParams, useRouter } from 'next/navigation'
 import Search from "@/components/forms/Search";
-import { callAPI, makeQueryClient} from "@/utils/utils";
+import { callAPI, makeQueryClient} from "@/utils/utils"; 
 import { hydrateNames } from "@/utils/nameUtils";
 
 import { current } from "tailwindcss/colors";

@@ -91,6 +91,41 @@ export async function callLnrClass(provider, functionName, ...args){
         throw error; // Re-throw the error for further handling
       }
 
-
 }
 
+export async function getController(provider, bytes){
+    const lnr = new LNR(ethers, provider);
+
+    try {
+        var lnres = await lnr.resolverContract.Controller(bytes)
+        if(lnres !== "0x0000000000000000000000000000000000000000" && ethers.utils.isAddress(lnres) == true){
+            return(lnres)
+        }
+    }catch(error){
+        return(undefined)
+    }
+    return(undefined)
+}
+
+export async function getOwner(provider, nameBytes){
+    const lnr = new LNR(ethers, provider);
+    try{
+        return lnr.linageeContract.owner(nameBytes).then(function(result) {
+        if (result === ethers.constants.AddressZero)
+            return null;
+        else {
+            if (result != lnr.WRAPPER_ADDRESS) {
+            return {owner: result, wrapped: "unwrapped", tokenId: undefined};
+            } else {
+            return lnr.wrapperContract.nameToId(nameBytes).then(function(tokenId) {
+                return lnr.wrapperContract.ownerOf(tokenId).then(function(tokenOwner) {
+                return {owner: tokenOwner, wrapped: "wrapped", tokenId: tokenId};
+                });
+            });
+            }
+        }
+        });
+    } catch(error){
+        return(undefined)
+    }
+  }
