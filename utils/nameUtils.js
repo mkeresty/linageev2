@@ -57,7 +57,6 @@ export async function resolveOrReturnOld(walletProvider, nameAddress){
 
     if(walletProvider){
         const ethersProvider = new ethers.providers.Web3Provider(walletProvider)
-        console.log("provider in utils", ethersProvider)
     }
 
         if(ethers.utils.isAddress(nameAddress) == true){
@@ -114,12 +113,12 @@ export async function getOwner(provider, nameBytes){
         if (result === ethers.constants.AddressZero)
             return null;
         else {
-            if (result != lnr.WRAPPER_ADDRESS) {
+            if (result !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7") {
             return {owner: result, wrapped: "unwrapped", tokenId: undefined};
             } else {
             return lnr.wrapperContract.nameToId(nameBytes).then(function(tokenId) {
                 return lnr.wrapperContract.ownerOf(tokenId).then(function(tokenOwner) {
-                return {owner: tokenOwner, wrapped: "wrapped", tokenId: tokenId};
+                return {owner: tokenOwner, wrapped: "wrapped", tokenId: Number(tokenId._hex)};
                 });
             });
             }

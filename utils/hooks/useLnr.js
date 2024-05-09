@@ -47,6 +47,7 @@ export function useLnrProfile(addressOrName) {
         return
       }
       let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
+      //let ethersProvider = new ethers.providers.AlchemyProvider("homestead", [process.env.NEXT_PUBLIC_ALCHEMY_API_KEY])
       let ethersSigner = ethersProvider.getSigner()
       let provider = undefined
       if(ethersSigner){
@@ -96,7 +97,7 @@ export function useLnrProfile(addressOrName) {
     };
 
     fetchData();
-  }, [addressOrName ]); 
+  }, [addressOrName, walletProvider ]); 
 
 
   return { name, address, loading, error };
@@ -114,8 +115,6 @@ export function useLnrName(bytes) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  console.log("bytes", bytes)
-
 
   const { walletProvider } = useWeb3ModalProvider();
 
@@ -123,12 +122,12 @@ export function useLnrName(bytes) {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("fetching")
       if(!walletProvider){
-        console.log("no provider here")
+        console.log("No provider", walletProvider)
         return
       }
       let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
+      //let ethersProvider = new ethers.providers.AlchemyProvider("homestead", [process.env.NEXT_PUBLIC_ALCHEMY_API_KEY])
       let ethersSigner = ethersProvider.getSigner()
       let provider = undefined
       if(ethersSigner){
@@ -136,12 +135,11 @@ export function useLnrName(bytes) {
       } else if(ethersProvider) {
         provider = ethersProvider
       } else{
-        console.log("no provider")
+        console.log("No provider")
       }
       setLoading(true);
       setError(null);
 
-      console.log("starting")
 
       
 
@@ -179,7 +177,7 @@ export function useLnrName(bytes) {
     };
 
     fetchData();
-  }, [bytes ]); 
+  }, [bytes, walletProvider ]); 
 
 
   return { name, domainUtf8, domainBytecode: bytes, valid: hydrated?.valid, normalized: hydrated?.normalized, wrapped, tokenId, owner, primary, controller, loading, error };

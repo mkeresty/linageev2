@@ -6,8 +6,6 @@ import CardWithImage from "@/components/CardWithImage";
 
 export default function Grid({items, mode}) {
 
-    console.log("items in", items)
-
 
 
     return(

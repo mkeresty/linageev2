@@ -16,7 +16,6 @@ import { useAccount } from 'wagmi'
 
 export default function NavbarExpandable() {
     const { address, isConnected, isDisconnected } = useAccount()
-    console.log("nav ", address, isConnected, isDisconnected)
 
 
     const [isOpen, setIsOpen] = useState(false);
@@ -28,9 +27,6 @@ export default function NavbarExpandable() {
 
       { id: 2, name: "Names", path: "/names" },
       { id: 3, name: "Mint", path: "/mint" },
-      { id: 4, name: "Portal", path: "/portal" },
-      { id: 5, name: "Profile", path: "/profile"},
-      { id: 6, name: "About", path: "/about" },
     ];
     
 

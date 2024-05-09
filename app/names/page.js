@@ -8,7 +8,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Search from "@/components/forms/Search";
 import { callAPI, makeQueryClient} from "@/utils/utils"; 
 import { hydrateNames } from "@/utils/nameUtils";
-
+import { InfinitySpin } from "react-loader-spinner";
 import { current } from "tailwindcss/colors";
 // import {usePaginationHook} from "@/utils/hooks/usePaginationHook";
 import PaginationComponent from "@/components/PaginationComponent";
@@ -173,12 +173,13 @@ export default function Names() {
           console.log("items ", respItems)
 
           }
+          setLoadingPage(false)
   }
 
   useEffect(() => { 
     setLoadingPage(true)
     fetchItems(searchRequest, currentOffset, true)
-    setLoadingPage(false)
+    
 
   }, [currentOffset, searchRequest])
 
@@ -187,7 +188,7 @@ export default function Names() {
 
 
     return (
-      <div className="flex flex-col justify-center items-center h-full py-5 lg:p-x-5 sm:p-x-2 mt-[60px] m-10">
+      <div className="flex flex-col justify-center items-center h-full  py-5 lg:p-x-5 sm:p-x-2 mt-[60px] m-10">
         <BreadCrumbComponent paths={[{name: "Names", link: "/names"}]}/>
         <div className="flex flex-row w-full items-center justify-between pt-3">
           <div className=" lg:w-[25rem] md:w-[20rem] z-100">
@@ -201,6 +202,16 @@ export default function Names() {
         </div>
         
         <Grid items={items} mode={"names"}/>
+        {loadingPage && ( 
+                <InfinitySpin
+                        visible={true}
+                        width="200"
+                        color="#bd8eff"
+                        ariaLabel="infinity-spin-loading"
+                        />
+
+          )}
+          <div className="h-[40vh]" />
 
       </div>
     );
