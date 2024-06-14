@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useLnrName } from "@/utils/hooks/useLnr";
 import LnrSvg from "@/components/LnrSvg";
 import { IoIosGift } from "react-icons/io";
@@ -10,15 +11,21 @@ import { LuSpellCheck } from "react-icons/lu";
 import { IoIosWarning } from "react-icons/io";
 import CopyClipboard from "@/components/CopyClipboard";
 import { InfinitySpin } from "react-loader-spinner";
-
+import { IoIosMore } from "react-icons/io";
+import StandardModal from "@/components/Modals/StandardModal";
 
 export default function Name({params}){
+
+    const [isVisible, setIsVisible] = useState(false)
 
     const res = useLnrName(params.id)
 
 
     return(
-        <div className="flex flex-col justify-center items-center min-h-[70vh] py-5 lg:p-x-5 sm:p-x-2 mt-[60px] m-10">
+        <div className="flex flex-col justify-center items-center min-h-[70vh] pb-5 lg:p-x-5 sm:p-x-2 mt-[60px] m-10">
+        
+        <StandardModal isVisible={isVisible} setIsVisible={setIsVisible} name={res}/>
+
         {res.loading && ( 
                 <InfinitySpin
                         visible={true}
@@ -31,9 +38,16 @@ export default function Name({params}){
 
 {!res.loading && !res.error &&(
 
-<section className="py-4 px-4 bg-white md:py-10 dark:bg-gray-900 antialiased rounded-md">
+<section className="py-4 px-4 bg-white md:py-10 dark:bg-gray-900 antialiased rounded-md ">
+<div className="h-6 w-[100%] top-0 flex items-center justify-end ">
+<IoIosMore 
+onClick={()=>setIsVisible(!isVisible)}
+className="w-4 h-4 text-gray-500 dark:text-white hover:scale-110 hover:text-gray-500 dark:hover:text-gray-300 transition duration-100 ease-in-out rounded-md hover:cursor-pointer" 
+/>
+</div>
     <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
       <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
+
         <div className="max-w-[100%] justify-center items-center ">
             <div className="w-[100%] h-[100%] flex flex-col justify-center items-center">
         {!res.loading && res.domainBytecode && res.domainUtf8 && (
@@ -42,8 +56,10 @@ export default function Name({params}){
             )}
             </div>
         </div>
+        
 
         <div className="mt-6 sm:mt-8 lg:mt-0">
+
           <h1
             className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
           >
