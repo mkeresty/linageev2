@@ -11,6 +11,7 @@ import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { FaWallet, FaUser  } from "react-icons/fa";
 //import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import Transfer from "@/components/Modals/SubModals/Transfer"
+import Wrap from "@/components/Modals/SubModals/Wrap"
 
 import { useAccount } from 'wagmi'
 
@@ -53,7 +54,9 @@ export default function StandardModal({isVisible, setIsVisible, name}) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
         >
-            <Transfer name={name}/>
+            {/* <Transfer name={name}/> */}
+
+            <Wrap name={name} />
             </motion.div>
     )}
 </AnimatePresence>

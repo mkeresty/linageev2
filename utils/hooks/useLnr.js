@@ -105,6 +105,7 @@ export function useLnrProfile(addressOrName) {
 
 export function useLnrName(bytes) {
   const [name, setName] = useState(undefined); // Initialize empty object for responses
+  const [domain, setDomain] = useState(undefined)
   const [domainUtf8, setDomainUtf8] = useState(undefined); // Initialize empty object for responses
   const [wrapped, setWrapped] = useState(undefined); // Initialize empty object for responses
   const [tokenId, setTokenId] = useState(undefined); // Initialize empty object for responses
@@ -149,15 +150,17 @@ export function useLnrName(bytes) {
               setHydrated(hyd[0])
             }
 
-            let domain = await callLnrClass(provider, "bytes32ToDomain", bytes)
-            if(domain){
-              setName(domain)
-              setDomainUtf8(domain.slice(0, -3))
-              let prmry = await callLnrClass(provider, "resolveName", domain)
+            let domainResp = await callLnrClass(provider, "bytes32ToDomain", bytes)
+            console.log("domain resp , ", domainResp)
+            if(domainResp){
+              setName(domainResp)
+              setDomainUtf8(domainResp.slice(0, -3))
+              let prmry = await callLnrClass(provider, "resolveName", domainResp)
               setPrimary(prmry)
             }
             
             let ownr = await getOwner(provider, bytes)
+            console.log("owner ", ownr)
             setOwner(ownr?.owner)
             setWrapped(ownr?.wrapped)
             setTokenId(ownr?.tokenId)
@@ -180,10 +183,10 @@ export function useLnrName(bytes) {
   }, [bytes, walletProvider ]); 
 
 
-  return { name, domainUtf8, domainBytecode: bytes, valid: hydrated?.valid, normalized: hydrated?.normalized, wrapped, tokenId, owner, primary, controller, loading, error };
+  return { domain, name, domainUtf8, domainBytecode: bytes, valid: hydrated?.valid, normalized: hydrated?.normalized, wrapped, tokenId, owner, primary, controller, loading, error };
 }
 
-export function useLnrCall(functionName, ...args) {
+export function useLnrCallOld(functionName, ...args) {
   const [data, setData] = useState(undefined); // Initialize empty object for responses
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -226,3 +229,136 @@ export function useLnrCall(functionName, ...args) {
 
   return { data, loading, error };
 }
+
+
+export function useLnrCall(functionName, timeout = 10000, ...args) {
+  const [data, setData] = useState(undefined); // Holds data or transaction object
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+
+
+  const { walletProvider } = useWeb3ModalProvider(); // Assuming this fetches the provider
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      let ethersSigner = ethersProvider.getSigner();
+      let provider = undefined;
+
+      if (ethersSigner) {
+        provider = ethersSigner;
+      } else if (ethersProvider) {
+        provider = ethersProvider;
+      } else {
+        console.log("no provider");
+        setError(new Error('No provider available')); // Set error if no provider
+        return; // Exit if no provider
+      }
+
+      setLoading(true);
+      setError(null);
+
+      const timeoutId = setTimeout(() => {
+        setError(new Error('Transaction Timeout'));
+        setLoading(false);
+      }, timeout);
+
+      try {
+        const shouldUseCurrentUser = args.includes('currentUser');
+
+        if (shouldUseCurrentUser && !ethersSigner) {
+          throw new Error('User is not logged in'); // Throw error if currentUser and no signer
+        }
+
+        const providerToUse = shouldUseCurrentUser ? await ethersSigner.getAddress() : provider;
+
+        const response = await callLnrClass(providerToUse, functionName, ...(shouldUseCurrentUser ? [...args.filter(arg => arg !== 'currentUser')] : args));
+        // Check if response is a transaction object
+        if (response && response.wait) {
+          const receipt = await response.wait();
+          setData(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+        } else {
+          setData(response); // Assume data for read-only calls
+        }
+      } catch (error) {
+        console.error('Error calling LNR function:', error);
+        setError(error);
+      } finally {
+        clearTimeout(timeoutId); // Clear timeout on completion
+        setLoading(false);
+      }
+    };
+
+    fetchData().catch(error => setError(error)); // Handle errors thrown inside fetchData
+  }, [functionName, ...args, timeout]); // Re-run when functionName, args, or timeout change
+
+  return { data, loading, error };
+}
+
+
+
+
+
+export function useLnrCallProvider(walletProvider, functionName, timeout = 10000, ...args) {
+  const [data, setData] = useState(undefined); // Holds data or transaction object
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      let ethersSigner = ethersProvider.getSigner();
+      let provider = undefined;
+
+      if (ethersSigner) {
+        provider = ethersSigner;
+      } else if (ethersProvider) {
+        provider = ethersProvider;
+      } else {
+        console.log("no provider");
+        setError(new Error('No provider available')); // Set error if no provider
+        return; // Exit if no provider
+      }
+
+      setLoading(true);
+      setError(null);
+
+      const timeoutId = setTimeout(() => {
+        setError(new Error('Transaction Timeout'));
+        setLoading(false);
+      }, timeout);
+
+      try {
+        const shouldUseCurrentUser = args.includes('currentUser');
+
+        if (shouldUseCurrentUser && !ethersSigner) {
+          throw new Error('User is not logged in'); // Throw error if currentUser and no signer
+        }
+
+        const providerToUse = shouldUseCurrentUser ? await ethersSigner.getAddress() : provider;
+
+        const response = await callLnrClass(providerToUse, functionName, ...(shouldUseCurrentUser ? [...args.filter(arg => arg !== 'currentUser')] : args));
+        // Check if response is a transaction object
+        if (response && response.wait) {
+          const receipt = await response.wait();
+          setData(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+        } else {
+          setData(response); // Assume data for read-only calls
+        }
+      } catch (error) {
+        console.error('Error calling LNR function:', error);
+        setError(error);
+      } finally {
+        clearTimeout(timeoutId); // Clear timeout on completion
+        setLoading(false);
+      }
+    };
+
+    fetchData().catch(error => setError(error)); // Handle errors thrown inside fetchData
+  }, [functionName, ...args, timeout]); // Re-run when functionName, args, or timeout change
+
+  return { data, loading, error };
+}
+

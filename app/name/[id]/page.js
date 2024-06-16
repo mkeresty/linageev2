@@ -13,6 +13,9 @@ import CopyClipboard from "@/components/CopyClipboard";
 import { InfinitySpin } from "react-loader-spinner";
 import { IoIosMore } from "react-icons/io";
 import StandardModal from "@/components/Modals/StandardModal";
+import { TbProgressBolt } from "react-icons/tb";
+
+
 
 export default function Name({params}){
 
@@ -79,6 +82,12 @@ className="w-4 h-4 text-gray-500 dark:text-white hover:scale-110 hover:text-gray
                     <span className="flex flex-row items-center gap-1">
                     <FaBoxOpen className="w-4 h-4" />
                     Unwrapped
+                    </span>
+                    )}
+                {(res.wrapped == "In progress") && (
+                    <span className="flex flex-row items-center gap-1">
+                    <TbProgressBolt className="w-4 h-4" />
+                    Wrapping in progress
                     </span>
                     )}
                 {/* Normalized */}

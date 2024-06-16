@@ -6,7 +6,8 @@ import { lnr, getAddress, getPrimaryName} from '@linagee/lnr-ethers-react';
 import { toast } from 'react-hot-toast';
 import LNR from "@/utils/lnrethers";
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
-
+import { handleEthersError } from '@/utils/etherutils';
+import { getCurrentSigner} from "@/utils/etherutils";
 
 
 export function hydrateNames(items){
@@ -82,15 +83,23 @@ export async function callLnrClass(provider, functionName, ...args){
 
 
     try {
-  
         const response = await lnr[functionName](...args);
-        return response; // Return the successful response
+        if (response && response.wait) {
+            const toastId = toast.loading('Transaction pending...');
+            const receipt = await response.wait();
+            toast.dismiss(toastId);
+            return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+          } else {
+            return(response)
+          }
       } catch (error) {
-        toast.error(error.message); // Display error notification using react-hot-toast
+        toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
         throw error; // Re-throw the error for further handling
       }
 
 }
+
+
 
 export async function getController(provider, bytes){
     const lnr = new LNR(ethers, provider);
@@ -106,6 +115,16 @@ export async function getController(provider, bytes){
     return(undefined)
 }
 
+export async function wrapName(signer, nameBytes){
+    const lnr = new LNR(ethers, signer)
+    try{
+        return await lnr.wrapperContract.wrap(nameBytes)
+
+    } catch (e){
+        return(e)
+    }
+}
+
 export async function getOwner(provider, nameBytes){
     const lnr = new LNR(ethers, provider);
     try{
@@ -113,10 +132,21 @@ export async function getOwner(provider, nameBytes){
         if (result === ethers.constants.AddressZero)
             return null;
         else {
-            if (result !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7") {
+            if (result !== LNR.WRAPPER_ADDRESS) {
             return {owner: result, wrapped: "unwrapped", tokenId: undefined};
             } else {
             return lnr.wrapperContract.nameToId(nameBytes).then(function(tokenId) {
+                if(!Number(tokenId._hex)){
+                    return lnr.wrapperContract.waitForWrap(nameBytes).then(function(waitForWrap){
+                        if(waitForWrap){
+                            return {owner: waitForWrap, wrapped: "In progress", tokenId: undefined}
+                        }
+                        else{
+                            return {owner: undefined, wrapped: undefined, tokenId: undefined}
+                        }
+                    })
+                    
+                }
                 return lnr.wrapperContract.ownerOf(tokenId).then(function(tokenOwner) {
                 return {owner: tokenOwner, wrapped: "wrapped", tokenId: Number(tokenId._hex)};
                 });
@@ -128,3 +158,47 @@ export async function getOwner(provider, nameBytes){
         return(undefined)
     }
   }
+
+
+
+export async function getStatus(walletProvider, domain, bytes){
+
+    let status = undefined
+    let generalStatus = undefined
+    let owner = undefined
+
+    const {address, signer} = await getCurrentSigner(walletProvider)
+
+
+    // let ownerObj = await callLnrClass(signer, "owner", domain)
+    // if(ownerObj && ownerObj.length == 2 && (ownerObj[0] == address || ownerObj[0] == LNR.WRAPPER_ADDRESS)){
+    //     owner = ownerObj[0]
+    //     generalStatus = ownerObj[1]
+    // }
+
+    let ownerObj = await getOwner(signer, bytes)
+    if(ownerObj && (ownerObj.owner == address || ownerObj.owner == LNR.WRAPPER_ADDRESS)){
+        owner = ownerObj.owner
+        generalStatus = ownerObj.wrapped
+    }
+
+    
+    let waitForWrapInitial = await callLnrClass(signer, "waitForWrap", domain)
+
+    if(waitForWrapInitial !== address && owner == address && generalStatus == "unwrapped"){
+        status = "readyForCreateWrapper"
+    }
+    if(waitForWrapInitial !== address && owner == address && generalStatus == "wrapped"){
+        status = "readyForUnwrap"
+    }
+
+    if(waitForWrapInitial == address && owner == address){
+        status = "readyForTransfer"
+    }
+    if(waitForWrapInitial == address && generalStatus == "In progress"){
+        status = "readyForWrap"
+    }
+
+    return(status)
+
+}
