@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-export default function Controller({name}){
+export default function Record({name}){
 
     const [toAddress, setToAddress] = useState()
 

@@ -78,27 +78,32 @@ export async function resolveOrReturnOld(walletProvider, nameAddress){
 
 
 export async function callLnrClass(provider, functionName, ...args){
-
     const lnr = new LNR(ethers, provider);
-
-
     try {
+        
         if(functionName == "wrap"){
-            var response = await wrapName(provider, ...args)
+            let response = await wrapName(provider, ...args)
+            if (response && response.wait) {
+                const toastId = toast.loading('Transaction pending...');
+                const receipt = await response.wait();
+                toast.dismiss(toastId);
+                return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+              } else {
+                return(response)
+              }
         }
         else{
-            var response = await lnr[functionName](...args);
+            let response = await lnr[functionName](...args);
+            if (response && response.wait) {
+                const toastId = toast.loading('Transaction pending...');
+                const receipt = await response.wait();
+                toast.dismiss(toastId);
+                return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+              } else {
+                return(response)
+              }
         }
 
-        console.log("response ", response)
-        if (response && response.wait) {
-            const toastId = toast.loading('Transaction pending...');
-            const receipt = await response.wait();
-            toast.dismiss(toastId);
-            return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
-          } else {
-            return(response)
-          }
       } catch (error) {
         toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
         throw error; // Re-throw the error for further handling
@@ -133,8 +138,9 @@ export async function wrapName(signer, nameBytes){
 }
 
 export async function getOwner(provider, nameBytes){
-    const lnr = new LNR(ethers, provider);
+    
     try{
+        const lnr = new LNR(ethers, provider);
         return lnr.linageeContract.owner(nameBytes).then(function(result) {
         if (result === ethers.constants.AddressZero)
             return null;
@@ -201,4 +207,77 @@ export async function getStatus(walletProvider, domain, bytes){
 
     return(status)
 
+}
+
+
+export async function transferByTokenId(signer, fromAddress, toAddress, tokenId){
+    const lnr = new LNR(ethers, signer)
+    try{
+        console.log("invoking transder")
+        let response =  await lnr.wrapperContract.transferFrom(fromAddress, toAddress, tokenId)
+        console.log(response)
+        if (response && response.wait) {
+            const toastId = toast.loading('Transaction pending...');
+            const receipt = await response.wait();
+            toast.dismiss(toastId);
+            return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+          } else {
+            return(response)
+          }
+
+    } catch (e){
+        toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
+        return(e)
+    }
+}
+
+export async function transferByDomainBytecode(signer, toAddress, domainBytecode){
+    const lnr = new LNR(ethers, signer)
+    try{
+        let response =  await lnr.linageeContract.transfer(domainBytecode, toAddress)
+        if (response && response.wait) {
+            const toastId = toast.loading('Transaction pending...');
+            const receipt = await response.wait();
+            toast.dismiss(toastId);
+            return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+          } else {
+            return(response)
+          }
+
+    } catch (error){
+        toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
+        return(e)
+    }
+}
+
+
+
+export async function resolveOrReturn(signer, addressOrName){
+    const lnr = new LNR(ethers, signer)
+    try {
+
+        if(ethers.utils.isAddress(addressOrName)){
+          return(addressOrName)
+        }
+        else{
+            let nameArg
+            if(addressOrName.endsWith(".og")){
+              nameArg = addressOrName
+              }
+            else{
+              nameArg = addressOrName + ".og"
+            }
+            let addressResponse = await lnr.resolveName(nameArg)
+            if(ethers.utils.isAddress(addressResponse)){
+                return(addressResponse)
+            }
+            else{
+                return(undefined)
+            }
+        }
+      
+      } catch (error) {
+        
+        return(undefined)
+      }
 }

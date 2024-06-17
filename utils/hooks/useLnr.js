@@ -151,7 +151,6 @@ export function useLnrName(bytes) {
             }
 
             let domainResp = await callLnrClass(provider, "bytes32ToDomain", bytes)
-            console.log("domain resp , ", domainResp)
             if(domainResp){
               setName(domainResp)
               setDomainUtf8(domainResp.slice(0, -3))
@@ -160,7 +159,6 @@ export function useLnrName(bytes) {
             }
             
             let ownr = await getOwner(provider, bytes)
-            console.log("owner ", ownr)
             setOwner(ownr?.owner)
             setWrapped(ownr?.wrapped)
             setTokenId(ownr?.tokenId)
