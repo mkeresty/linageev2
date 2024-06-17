@@ -34,6 +34,7 @@ export default function Profile() {
   async function fetchItems(search, offset = 0){ 
     if(search && search.length > 0 && mode == "names"){
       let respItems = await callAPI("graph", JSON.stringify({field: 'owner', value: search, offset: offset}));
+      console.log(respItems)
       respItems = hydrateNames(respItems.results)
       setItems(respItems)
 

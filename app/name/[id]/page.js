@@ -61,7 +61,7 @@ className="w-4 h-4 text-gray-500 dark:text-white hover:scale-110 hover:text-gray
         </div>
         
 
-        <div className="mt-6 sm:mt-8 lg:mt-0">
+        <div className="mt-6 sm:mt-8 lg:mt-0"> 
 
           <h1
             className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"

@@ -83,7 +83,14 @@ export async function callLnrClass(provider, functionName, ...args){
 
 
     try {
-        const response = await lnr[functionName](...args);
+        if(functionName == "wrap"){
+            var response = await wrapName(provider, ...args)
+        }
+        else{
+            var response = await lnr[functionName](...args);
+        }
+
+        console.log("response ", response)
         if (response && response.wait) {
             const toastId = toast.loading('Transaction pending...');
             const receipt = await response.wait();
@@ -168,13 +175,6 @@ export async function getStatus(walletProvider, domain, bytes){
     let owner = undefined
 
     const {address, signer} = await getCurrentSigner(walletProvider)
-
-
-    // let ownerObj = await callLnrClass(signer, "owner", domain)
-    // if(ownerObj && ownerObj.length == 2 && (ownerObj[0] == address || ownerObj[0] == LNR.WRAPPER_ADDRESS)){
-    //     owner = ownerObj[0]
-    //     generalStatus = ownerObj[1]
-    // }
 
     let ownerObj = await getOwner(signer, bytes)
     if(ownerObj && (ownerObj.owner == address || ownerObj.owner == LNR.WRAPPER_ADDRESS)){
