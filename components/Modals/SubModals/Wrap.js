@@ -15,7 +15,7 @@ import { motion} from "framer-motion";
 
 export default function Wrap({name}){
     const { walletProvider } = useWeb3ModalProvider();
-    const [status, setStatus] = useState(undefined)
+    const [status, setStatus] = useState("")
     const [loading, setLoading] = useState(false)
 
     const statuses = [
@@ -92,12 +92,13 @@ export default function Wrap({name}){
             <ul className="my-4 mt-0 space-y-3">
             {statuses.map((item, index) => ( 
                 <li key={"li"+item.statusName}>
-                    <a key={item.statusName} onClick={()=>handleAction(item.action, item.statusName, item.args)} className={`flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group dark:bg-gray-600  dark:text-white ${status == item.statusName ? "hover:cursor-pointer hover:bg-gray-100 hover:shadow dark:hover:bg-gray-500": "opacity-50"}`}>
+                    <button disabled={status !== item.statusName} key={item.statusName} onClick={()=>handleAction(item.action, item.statusName, item.args)} className={`w-full flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group dark:bg-gray-600  dark:text-white ${status == item.statusName ? "hover:cursor-pointer hover:bg-gray-100 hover:shadow dark:hover:bg-gray-500": "opacity-50"}`}>
+
                         <span className={`${status == item.statusName ? "bg-green-200 animate-pulse":" "} flex items-center justify-center w-8 h-8 rounded-full  `}>
                         {item.icon}
                         </span>
-                        <span className="flex-1 ms-3 whitespace-nowrap">{item.title}</span>
-                    </a>
+                        <span className="ml-2 ms-3 whitespace-nowrap">{item.title}</span>
+                        </button>
                 </li>
                 ))}
 

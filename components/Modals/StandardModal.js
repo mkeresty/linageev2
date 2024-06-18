@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCurrentWidth } from "@/utils/hooks/useCurrentWidth";
+import { getCurrentSigner} from "@/utils/etherutils";
 import Transfer from "@/components/Modals/SubModals/Transfer"
 import Wrap from "@/components/Modals/SubModals/Wrap"
 import Resolve from "@/components/Modals/SubModals/Resolve"
@@ -13,25 +13,62 @@ import { BsSendFill } from "react-icons/bs";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import { RiEdit2Fill } from "react-icons/ri";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
+import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 
 
 
 
 export default function StandardModal({isVisible, setIsVisible, name}) {
+  const { walletProvider } = useWeb3ModalProvider();
+
   const [view, setView] = useState("menu")
+  const [load, setLoading] = useState(false)
+  const [auth, setAuth] = useState("")
+  const [isDisabled, setIsDisabled] = useState({"menu": true, "wrapping": true, "transfer": true, "resolve": true, "record": false})
 
   const views = [
                 {viewName: "menu", viewTitle: "Menu", viewIcon: undefined, viewMore: undefined},
                 {viewName: "wrapping", viewTitle: "Wrapping", viewIcon: <IoIosGift className="w-4 h-4" />, viewMore: "wrap/unwrap"},
                 {viewName: "transfer", viewTitle: "Transfer", viewIcon: <BsSendFill className="w-4 h-4" />, viewMore: undefined},
                 {viewName: "resolve", viewTitle: "Resolving", viewIcon: <BsFillPersonVcardFill className="w-4 h-4" />, viewMore: undefined},
-                {viewName: "record", viewTitle: "Set records", viewIcon: <RiEdit2Fill className="w-4 h-4" />, viewMore: undefined},
+                {viewName: "record", viewTitle: "Records", viewIcon: <RiEdit2Fill className="w-4 h-4" />, viewMore: undefined},
                 ]
 
       const toggleVisible =()=>{
         setView("menu")
         setIsVisible(!isVisible)
       }
+
+
+
+    const handleViews = async() =>{
+      setLoading(true)
+      const {address, signer} = await getCurrentSigner(walletProvider)
+      if(address == name.controller && address!== name.owner){
+        setIsDisabled({"menu": true, "wrapping": true, "transfer": true, "resolve": false, "record": false})
+        setAuth("controller")
+      }
+      if(address == name.owner){
+        setIsDisabled({"menu": true, "wrapping": false, "transfer": false, "resolve": false, "record": false})
+        setAuth("owner")
+      }
+      else{
+        setIsDisabled({"menu": true, "wrapping": true, "transfer": true, "resolve": false, "record": false})
+        setAuth("")
+      }
+
+      setLoading(false)
+      return
+  }
+
+  useEffect(()=>{
+      if(name && name.name){
+          handleViews()
+      }
+
+  },[name])
+
+
 
 
   
@@ -79,11 +116,11 @@ export default function StandardModal({isVisible, setIsVisible, name}) {
                                 <ul className="my-4 mt-0 space-y-3">
                                 {views.slice(1).map((item, index) => ( 
                                       <li key={"menu-"+item.viewName}>
-                                        <a onClick={()=>setView(item.viewName)} className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white hover:cursor-pointer">
+                                        <button disabled={isDisabled[item.viewName]} onClick={()=>setView(item.viewName)} className={`w-full flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white hover:cursor-pointer`}>
                                             {item.viewIcon}
-                                            <span className="flex-1 ms-3 whitespace-nowrap">{item.viewTitle}</span>
-                                            {item.viewMore && (<span className="inline-flex items-center justify-center px-2 py-0.5 ms-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">{item.viewMore}</span>)}
-                                        </a>
+                                            <span className="ml-2 whitespace-nowrap">{item.viewTitle}</span>
+                                            {item.viewMore && (<span className="absolute flex flex-end items-center justify-center px-2 py-0.5 ms-3 right-0 mr-8 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">{item.viewMore}</span>)}
+                                        </button>
                                     </li>
                                 ))}
                                 </ul>
@@ -93,8 +130,8 @@ export default function StandardModal({isVisible, setIsVisible, name}) {
                   )}
                   {view == "wrapping" && (<Wrap name={name}/>)}
                   {view == "transfer" && (<Transfer name={name}/>)}
-                  {view == "resolve" && (<Resolve name={name}/>)}
-                  {view == "record" && (<Record name={name}/>)}
+                  {view == "resolve" && (<Resolve name={name} auth={auth}/>)}
+                  {view == "record" && (<Record name={name} auth={auth}/>)}
 
 
                   </motion.div>

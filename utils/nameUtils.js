@@ -80,9 +80,19 @@ export async function resolveOrReturnOld(walletProvider, nameAddress){
 export async function callLnrClass(provider, functionName, ...args){
     const lnr = new LNR(ethers, provider);
     try {
-        
         if(functionName == "wrap"){
             let response = await wrapName(provider, ...args)
+            if (response && response.wait) {
+                const toastId = toast.loading('Transaction pending...');
+                const receipt = await response.wait();
+                toast.dismiss(toastId);
+                return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+              } else {
+                return(response)
+              }
+        }
+        if(args[0] == undefined){
+            let response = await lnr[functionName]();
             if (response && response.wait) {
                 const toastId = toast.loading('Transaction pending...');
                 const receipt = await response.wait();
@@ -105,6 +115,7 @@ export async function callLnrClass(provider, functionName, ...args){
         }
 
       } catch (error) {
+
         toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
         throw error; // Re-throw the error for further handling
       }
@@ -281,3 +292,51 @@ export async function resolveOrReturn(signer, addressOrName){
         return(undefined)
       }
 }
+
+
+  export async function handleTextRecord(provider, functionName, _name, key, value = undefined) {
+        try {
+            const abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"name","type":"bytes32"},{"indexed":true,"internalType":"address","name":"controller","type":"address"}],"name":"NewController","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"name","type":"bytes32"},{"indexed":true,"internalType":"address","name":"primary","type":"address"}],"name":"NewPrimary","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"name","type":"bytes32"},{"indexed":true,"internalType":"string","name":"key","type":"string"},{"indexed":true,"internalType":"string","name":"value","type":"string"}],"name":"SetTextRecord","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"controller","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"}],"name":"getResolveAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"string","name":"_key","type":"string"}],"name":"getTextRecord","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"lnrAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"primary","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"proxiableUUID","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_domain","type":"string"}],"name":"resolve","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"resolveAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"address","name":"_controller","type":"address"}],"name":"setController","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"}],"name":"setPrimary","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"string","name":"_key","type":"string"},{"internalType":"string","name":"_value","type":"string"}],"name":"setTextRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"}],"name":"unsetController","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPrimary","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"string","name":"_key","type":"string"}],"name":"unsetTextRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"userTextRecords","outputs":[{"internalType":"bool","name":"initialized","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"address","name":"_addr","type":"address"}],"name":"verifyIsNameOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}]
+            const contract = new ethers.Contract(LNR.RESOLVER_ADDRESS, abi, provider);
+
+            if(_name.endsWith(".og")){
+                _name = _name.slice(0,-3)
+            }
+            const parsedName = ethers.utils.formatBytes32String(_name);
+
+            if(functionName == "getTextRecord"){
+                let response = await contract[functionName](parsedName, key);
+                return(response)
+            }
+            if(functionName == "unsetTextRecord"){
+                let response = await contract[functionName](parsedName, key);
+                if (response && response.wait) {
+                    const toastId = toast.loading('Transaction pending...');
+                    const receipt = await response.wait();
+                    toast.dismiss(toastId);
+                    return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+                  } else {
+                    return(response)
+                  }
+            }
+
+            if(functionName == "setTextRecord"){
+                let response = await contract[functionName](parsedName, key, value);
+                if (response && response.wait) {
+                    const toastId = toast.loading('Transaction pending...');
+                    const receipt = await response.wait();
+                    toast.dismiss(toastId);
+                    return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+                  } else {
+                    return(response)
+                  }
+            }
+            return(undefined)
+
+
+      
+      } catch (error) {
+        console.log("error ", error)
+        return(undefined)
+      }
+  }

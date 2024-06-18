@@ -5,14 +5,12 @@ async function loopGraph(address, type='owner'){
     var offset = 0;
     for ( let i = 0; i>=0; i++) {
         var tokens = await theGraph(address, offset);
-        console.log(i*100)
         if(tokens && tokens.errors == undefined){
             var resp = tokens['data']['domains'] 
             if(resp.length < 1){
                 return(gdata)
             }
-            console.log(resp)
-            console.log('resppp', resp.slice(-1)[0].registerIndex)
+
             var offset = resp.slice(-1)[0].registerIndex
             console.log(offset)
             gdata.push(...resp);

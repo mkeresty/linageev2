@@ -83,7 +83,7 @@ export default function Transfer({name}){
             </div>
             <div className="p-4 md:p-5 my-4 mt-0 space-y-3">
                     <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white font-extralight">Transfer <span className="font-bold">{name.domainUtf8}</span></label>
-                    <input onChange={(e)=>setRecipient(e.target.value)} value={recipient} type="text"  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0x123" required />
+                    <input onChange={(e)=>setRecipient(e.target.value)} value={recipient} type="text"  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Address or name.og" required />
             </div>
             <div className="w-full px-4 h-auto flex flex-end items-center justify-end  ">
             <button onClick={()=>handleTransfer(recipient)} type="button" className="mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Transfer</button>
