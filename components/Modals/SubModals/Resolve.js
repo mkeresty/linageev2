@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Fragment } from "react"
 import { toast } from 'react-hot-toast';
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { getCurrentSigner} from "@/utils/etherutils";
 import { motion} from "framer-motion";
 import { callLnrClass } from "@/utils/nameUtils";
+
 
 
 export default function Resolve({name, auth}){
@@ -25,6 +26,10 @@ export default function Resolve({name, auth}){
             const {address, signer} = await getCurrentSigner(walletProvider)
             let args
 
+            if(name.wrapped == "wrapped"){
+                return toast.error("Name must be unwrapped to edit text records")
+            }
+            
             if(action == "unsetPrimary"){
                 args = [undefined]
             }
@@ -62,7 +67,7 @@ export default function Resolve({name, auth}){
 
 
 
-
+console.log((name.primary !== (undefined || null)) , (auth !==( "owner" || "controller")))
     return(
 
 
@@ -81,28 +86,36 @@ export default function Resolve({name, auth}){
             </div>
             <div className="p-2 md:p-5 my-2 mt-0 space-y-3">
                 <div className="relative">
-                <label for="search" className="mb-2 text-sm font-medium text-gray-900  dark:text-white">Primary</label>
+                <label  className="mb-2 text-sm font-medium text-gray-900  dark:text-white">Primary</label>
 
-                    <input disabled={name.primary !== undefined || auth !== "owner" || auth !== "controller"}  onChange={(e)=>setPrimary(e.target.value)} value={primary} type="text"  className="block w-full p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={name.primary || "Not set"} required />
+                    <input disabled={name.primary || (auth !==( "owner" || "controller"))}  onChange={(e)=>setPrimary(e.target.value)} value={primary} type="text"  className="block w-full mt-2 p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={name.primary || "Not set"} required />
+                    {(auth == "owner" || auth == "controller") &&(
+                        <Fragment>
                     {name.primary ? (
-                    <button disabled={auth !== "owner" || auth !== "controller"} onClick={()=>handleResolve("unsetPrimary")} type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Unset</button>
+                    <button disabled={auth !==( "owner" || "controller")} onClick={()=>handleResolve("unsetPrimary")} type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Unset</button>
                     ):(
-                        <button disabled={auth !== "owner" || auth !== "controller"} onClick={()=>handleResolve("setPrimary")} type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Set</button>
+                        <button disabled={auth !==( "owner" || "controller")} onClick={()=>handleResolve("setPrimary")} type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Set</button>
 
                     )}
+                        </Fragment>
+                    )}
+
                 </div>
             </div>
             <div className="p-3 md:p-5 my-2 mt-0 space-y-3">
                 <div className="relative">
-                <label for="search" className="mb-2 text-sm font-medium text-gray-900  dark:text-white">Controller</label>
+                <label  className="mb-3 text-sm font-medium text-gray-900  dark:text-white">Controller</label>
 
-                    <input disabled={name.controller !== undefined|| auth !== "owner" } onChange={(e)=>setController(e.target.value)} value={controller} type="text"  className="block w-full p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={name.controller || "Not set"} required />
+                    <input disabled={name.controller !== undefined || auth !== "owner" } onChange={(e)=>setController(e.target.value)} value={controller} type="text"  className="block w-full mt-2 p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={name.controller || "Not set"} required />
+                    {auth == "owner" &&(
+                        <Fragment>
                     {name.controller ? (
                     <button disabled={auth !== "owner" } onClick={()=>handleResolve("unsetController")} type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Unset</button>
                     ):(
                         <button disabled={auth !== "owner" } onClick={()=>handleResolve("setController")} type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Set</button>
-
-                    )}               
+                    )}      
+                        </Fragment>
+                    )}
                      </div>
             </div>
 

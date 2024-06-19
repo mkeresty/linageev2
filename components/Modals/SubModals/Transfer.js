@@ -7,6 +7,7 @@ import { getCurrentSigner} from "@/utils/etherutils";
 import LNR from "@/utils/lnrethers";
 import { getStatus, transferByTokenId, transferByDomainBytecode, resolveOrReturn } from "@/utils/nameUtils";
 import { motion} from "framer-motion";
+import { IoMdSend } from "react-icons/io";
 
 
 export default function Transfer({name}){
@@ -81,15 +82,15 @@ export default function Transfer({name}){
                     {name.name}
                 </h3>
             </div>
-            <div className="p-4 md:p-5 my-4 mt-0 space-y-3">
-                    <label className="block mb-2 text-lg font-medium text-gray-900 dark:text-white font-extralight">Transfer <span className="font-bold">{name.domainUtf8}</span></label>
-                    <input onChange={(e)=>setRecipient(e.target.value)} value={recipient} type="text"  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Address or name.og" required />
+            <div className="p-4 md:p-5 my-4 mt-0 space-y-3 relative">
+            <label className="mb-2 text-sm font-medium text-gray-900  dark:text-white">Transfer</label>
+                    <input onChange={(e)=>setRecipient(e.target.value)} value={recipient} type="text"  className="block w-full p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Address or name.og" required />
+                    <div className="absolute bottom-6 rounded-md shadow-sm end-6  " role="group">
+                        <button onClick={()=>handleTransfer(recipient)} type="button" className={`px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white `}>
+                            <IoMdSend className="w-4 h-4" />
+                        </button>
+                    </div>
             </div>
-            <div className="w-full px-4 h-auto flex flex-end items-center justify-end  ">
-            <button onClick={()=>handleTransfer(recipient)} type="button" className="mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Transfer</button>
-
-            </div>
-
         </div>
   </motion.div>
 

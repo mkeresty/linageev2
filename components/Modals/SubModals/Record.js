@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Fragment } from "react"
 import { toast } from 'react-hot-toast';
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { getCurrentSigner} from "@/utils/etherutils";
@@ -21,7 +21,6 @@ export default function Record({name, auth}){
 
 
     async function handleRecord(action){
-        console.log(name)
         setLoading(true)
 
         try{
@@ -39,6 +38,12 @@ export default function Record({name, auth}){
                 }
             }
             else{
+                if(auth !== "owner"){
+                    return toast.error("You are not the owner")
+                }
+                if(name.wrapped == "wrapped"){
+                    return toast.error("Name must be unwrapped to set text records")
+                }
                 if(action == "setTextRecord"){
                     args = [name.name, recordKey, recordValue]
                 }
@@ -90,20 +95,36 @@ export default function Record({name, auth}){
                 <div className="relative">
                 <label className="mb-2 text-sm font-medium text-gray-900  dark:text-white">Record key</label>
                     <input onChange={(e)=>setRecordKey(e.target.value)} value={recordKey} type="text"  className="block mt-1 w-full p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Record key" required />
-                    <div className="inline-flex rounded-md shadow-sm absolute end-2.5 bottom-2.5" role="group">
-                        <button onClick={()=>handleRecord("getTextRecord")} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                    {/* <div className="inline-flex rounded-md shadow-sm absolute end-2.5 bottom-2.5" role="group">
+                        <button onClick={()=>handleRecord("getTextRecord")} type="button" className={`"px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white ${auth !== "owner" ? "":"rounded-s-lg"}`}>
                             <FaSearch className="w-4 h-4" />
                         </button>
+ 
                         <button disabled={auth !== "owner"} onClick={()=>handleRecord("unsetTextRecord")}  type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
                             <FaRegTrashAlt className="w-4 h-4" />
                         </button>
+       
 
+
+                    </div> */}
+
+                    <div className="inline-flex rounded-md shadow-sm end-2.5 bottom-2.5 absolute" role="group">
+                        <button onClick={()=>handleRecord("getTextRecord")} type="button" className={`px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white ${auth !== "owner" ? "rounded-lg": ""}`}>
+                            <FaSearch className="w-4 h-4" />
+                        </button>
+                            {auth == "owner" && (
+                        <button disabled={auth !== "owner"} onClick={()=>handleRecord("unsetTextRecord")} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-white border   border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                            <FaRegTrashAlt className="w-4 h-4" />
+                        </button>
+                          )}
                     </div>
                 </div>
                 <div className="relative">
                 <label className="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">Record value</label>
-                <textarea onChange={(e)=>setRecordValue(e.target.value)} value={recordValue} rows="4" className="block mt-1 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Record value"/>
+                <textarea disabled={auth !== "owner"} onChange={(e)=>setRecordValue(e.target.value)} value={recordValue} rows="4" className="block mt-1 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Record value"/>
+                {auth == "owner" && (
                 <button disabled={auth !== "owner"} onClick={()=>handleRecord("setTextRecord")} type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Set</button>
+                )}
                
                 </div>
             </div>

@@ -116,7 +116,7 @@ export default function StandardModal({isVisible, setIsVisible, name}) {
                                 <ul className="my-4 mt-0 space-y-3">
                                 {views.slice(1).map((item, index) => ( 
                                       <li key={"menu-"+item.viewName}>
-                                        <button disabled={isDisabled[item.viewName]} onClick={()=>setView(item.viewName)} className={`w-full flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white hover:cursor-pointer`}>
+                                        <button disabled={isDisabled[item.viewName]} onClick={()=>setView(item.viewName)} className={`w-full flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 group dark:bg-gray-600  dark:text-white disabled:opacity-50  ${isDisabled[item.viewName] ? " ":"hover:bg-gray-100 dark:hover:bg-gray-500 hover:cursor-pointer"}`}>
                                             {item.viewIcon}
                                             <span className="ml-2 whitespace-nowrap">{item.viewTitle}</span>
                                             {item.viewMore && (<span className="absolute flex flex-end items-center justify-center px-2 py-0.5 ms-3 right-0 mr-8 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">{item.viewMore}</span>)}
