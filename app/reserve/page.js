@@ -9,6 +9,7 @@ import { FaSearch } from "react-icons/fa";
 import { getCurrentSigner} from "@/utils/etherutils";
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { toast } from 'react-hot-toast';
+import BreadCrumbComponent from "@/components/BreadCrumbComponent";
 
 
 export default function Reserve(){
@@ -56,6 +57,8 @@ export default function Reserve(){
 
     return(
         <div className="flex flex-col justify-center items-center min-h-[70vh] pb-5 lg:px-5 sm:px-2 mt-[80px] m-10">
+          <BreadCrumbComponent paths={[{name: "Reserve", link: "/reserve"}]}/>
+
 
 <section className="py-4 px-4 bg-white md:py-10 md:w-[400px] dark:bg-gray-900 antialiased rounded-md ">
 

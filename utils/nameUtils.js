@@ -116,7 +116,7 @@ export async function callLnrClass(provider, functionName, ...args){
 
       } catch (error) {
 
-        toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
+        //toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
         console.log(error); // Re-throw the error for further handling
       }
 

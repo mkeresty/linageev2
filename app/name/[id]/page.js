@@ -41,7 +41,7 @@ export default function Name({params}){
 
 {!res.loading && !res.error &&(
 
-<section className="py-4 px-4 bg-white md:py-10 dark:bg-gray-900 antialiased rounded-md ">
+<section className="py-4 px-4 bg-white md:py-10 dark:bg-gray-900 antialiased rounded-md shadow-lg">
 <div className="h-6 w-[100%] top-0 flex items-center justify-end ">
 <IoIosMore 
 onClick={()=>setIsVisible(!isVisible)}

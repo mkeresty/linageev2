@@ -44,16 +44,18 @@ export default function StandardModal({isVisible, setIsVisible, name}) {
     const handleViews = async() =>{
       setLoading(true)
       const {address, signer} = await getCurrentSigner(walletProvider)
+      let validCheck = name.valid == true ? true : false
       if(address == name.controller && address!== name.owner){
         setIsDisabled({"menu": true, "wrapping": true, "transfer": true, "resolve": false, "record": false})
         setAuth("controller")
       }
       if(address == name.owner){
-        setIsDisabled({"menu": true, "wrapping": false, "transfer": false, "resolve": false, "record": false})
+        setIsDisabled({"menu": true, "wrapping": false, "transfer": false, "resolve": !validCheck, "record": !validCheck})
         setAuth("owner")
       }
+
       else{
-        setIsDisabled({"menu": true, "wrapping": true, "transfer": true, "resolve": false, "record": false})
+        setIsDisabled({"menu": true, "wrapping": true, "transfer": true, "resolve": !validCheck, "record": !validCheck})
         setAuth("")
       }
 
@@ -89,7 +91,7 @@ export default function StandardModal({isVisible, setIsVisible, name}) {
 <AnimatePresence key={"outer-prez"}>
     {isVisible && (
         <motion.div
-            className="fixed w-[90%] md:w-[70%] lg:w-[50%] max-w-[600px] h-[auto] p-5 -mt-5 bg-gray-200 dark:bg-gray-800 rounded-md"
+            className="fixed w-[90%] md:w-[70%] lg:w-[50%] max-w-[600px] h-[auto] p-5 -mt-5 bg-gray-200 dark:bg-gray-800 rounded-md shadow-lg"
             transition={{ delay: .3 }}
             initial={{ opacity: 0, scale: 0.75 }}
             animate={{ opacity: 1, scale: 1 }}

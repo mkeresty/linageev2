@@ -26,7 +26,8 @@ export default function NavbarExpandable() {
     const links = [
 
       { id: 2, name: "Names", path: "/names" },
-      { id: 3, name: "Mint", path: "/mint" },
+      { id: 3, name: "Reserve", path: "/reserve" },
+      { id: 4, name: "About", path: "/about" },
     ];
     
 

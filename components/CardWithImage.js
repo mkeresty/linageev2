@@ -9,16 +9,18 @@ import LnrSvg from "@/components/LnrSvg";
 import FlipCard, { FrontCard, BackCard } from "@/components/FlipCard";
 import InfoCard from "@/components/InfoCard";
 import {useRouter} from "next/navigation"
+import LNR from "@/utils/lnrethers";
 
 
 export default function CardWithImage({item, mode}) {
+  console.log("item ", item)
   const router = useRouter();
   const [hasError, setHasError] = useState(false);
   let name = item.name || item?.collection + item?.identifier;
 
-  let img_url = item?.contract == "0x2cc8342d7c8bff5a213eb2cde39de9a59b3461a7" ? `http://api.linagee.vision:8080/image/${item?.identifier}` : item.image_url
+  let img_url = item?.contract == LNR.WRAPPER_ADDRESS ? `http://api.linagee.vision:8080/image/${item?.identifier}` : item.image_url
 
-  let metadata_url = item?.contract == "0x2cc8342d7c8bff5a213eb2cde39de9a59b3461a7" ? `http://api.linagee.vision:8080/${item?.identifier}` : item.metadata_url
+  let metadata_url = item?.contract == LNR.WRAPPER_ADDRESS ? `http://api.linagee.vision:8080/${item?.identifier}` : item.metadata_url
 
 
   const [isFlipped, setIsFlipped] = useState(false);
@@ -100,19 +102,28 @@ export default function CardWithImage({item, mode}) {
       </FlipCard>
       <div className="flex justify-between items-center mt-5">
 
+
         <CardItem
           translateZ={20}
           as="button"
           className="px-2 rounded-xl text-lg  text-neutral-600 font-normal dark:text-white"
         >
-          <SiOpensea />
+          {mode == "names" &&(
+          <IoArrowRedoSharp onClick={handleFlip} />
+          )}
         </CardItem>
         <CardItem
           translateZ={20}
           as="button"
           className="px-2 rounded-xl text-lg  text-neutral-600 font-normal dark:text-white"
         >
-          <IoArrowRedoSharp onClick={handleFlip} />
+          {item.opensea_url && (
+            <a target="_blank" href={item.opensea_url}>
+              <SiOpensea />
+
+            </a>
+          )}
+          
         </CardItem>
       </div>
     </CardBody>

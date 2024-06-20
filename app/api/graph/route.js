@@ -22,6 +22,7 @@ export async function POST(req) {
         }
         else{
             results = await Graph.searchGraph(process.env.SUBGRAPH_URL, field, value, offset)
+            console.log(results)
             if(results.data){
                 //let joinedResults = results.data.exact.concat(results.data.search)
     
