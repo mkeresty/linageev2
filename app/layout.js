@@ -17,7 +17,20 @@ export const metadata = {
 }; 
 
 export default function RootLayout({ children }) {
-  const initialState = cookieToInitialState(config, headers().get('cookie'))
+  //const [initialState, setInitialState] = useState()
+  let initialState = undefined
+
+
+  // const initialState = cookieToInitialState(config, headers().get('cookie'))
+
+  if(global?.window !== "undefined"){
+    initialState = cookieToInitialState(config, headers().get('cookie'))
+  }
+
+  // useEffect(() => {
+  //   const initialStateResp = cookieToInitialState(config, headers().get('cookie'))
+  //   setInitialState(initialStateResp)
+  //   }, []);
 
   return (
     <html lang="en" suppressHydrationWarning>
