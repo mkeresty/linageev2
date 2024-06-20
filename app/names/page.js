@@ -13,140 +13,8 @@ import { current } from "tailwindcss/colors";
 // import {usePaginationHook} from "@/utils/hooks/usePaginationHook";
 import PaginationComponent from "@/components/PaginationComponent";
 import SearchV2 from "@/components/forms/SearchV2";
+import { getBytes } from "@/utils/nameUtils";
 
-const itemsnew = [
-  {
-    domainUtf8: "Bad",
-    normalized: false,
-    valid: false,
-    link: "/",
-    thumbnail:
-      "linagee/warning.svg",
-  },
-  {
-    domainUtf8: "437",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "linagee/437.og.svg",
-  },
-  {
-    domainUtf8: "wizard",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/wizard.og.svg",
-  },
-  {
-    domainUtf8: "0972",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/0972.og.svg",
-  },
-
-  {
-    domainUtf8: "b",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/b.og.svg",
-  },
-  {
-    domainUtf8: "account",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/account.og.svg",
-  },
-  {
-    domainUtf8: "feel",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/feel.og.svg",
-  },
-
-  {
-    domainUtf8: "jess",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "linagee/jess.og.svg",
-  },
-  {
-    domainUtf8: "robot",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/robot.og.svg",
-  },
-  {
-    domainUtf8: "vacation",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/vacation.og.svg",
-  },
-  {
-    domainUtf8: "844",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/844.og.svg",
-  },
-  {
-    domainUtf8: "ai",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/ai.og.svg",
-  },
-
-  {
-    domainUtf8: "advertising",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/advertising.og.svg",
-  },
-  {
-    domainUtf8: "pfp",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/pfp.og.svg",
-  },
-  {
-    domainUtf8: "the",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/the.og.svg",
-  },
-  {
-    domainUtf8: "bobby",
-    normalized: true,
-    valid: true,
-    link: "/",
-    thumbnail:
-      "/linagee/bobby.og.svg",
-  },
-];
 
 const queryClient = makeQueryClient();
 
@@ -167,11 +35,10 @@ export default function Names() {
 
   async function fetchItems(search, offset, initial = false){ 
         if(search && search.length > 0){
-          let respItems = await callAPI("graph", JSON.stringify({field: 'domainUtf8', value: search, offset: offset}));
+          let bytes = getBytes(search)
+          let respItems = await callAPI("graph", JSON.stringify({field: 'domainUtf8', value: search, offset: offset, bytes}));
           respItems = hydrateNames(respItems.results)
           setItems(respItems)
-          console.log("items ", respItems)
-
           }
           setLoadingPage(false)
   }

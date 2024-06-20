@@ -23,9 +23,9 @@ export default function About(){
           <h2 className="text-2xl font-bold">About</h2>
 
             <div className="mt-10 flex flex-col w-auto h-auto bg-white dark:bg-gray-800 shadow-lg rounded-md p-4 prose">
-                <ReactMarkdown children={content} remarkPlugins={[remarkGfm]} className="prose dark:prose:text-white dark:prose-headings:text-white prose-a:text-blue-600 dark:prose-invert"/>
-
-
+                <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose:text-white dark:prose-headings:text-white prose-a:text-blue-600 dark:prose-invert">
+                {content}
+                </ReactMarkdown>
 
             </div>
 

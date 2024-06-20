@@ -13,7 +13,6 @@ import dictionary from "@/utils/dictionary";
 import Trie from "@/utils/trie";
 
 
-const names = [ "bob", "joe", "sue", "jane"];
 
 export default function SearchV2(props = {styles: "", initialStyles: "opacity-75 ", stylesList : "", initialStylesList: "h-0 opacity-75"}) {
     const [isOpen, setIsOpen] = useState(false);

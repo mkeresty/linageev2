@@ -7,7 +7,8 @@ export async function POST(req) {
 
     try{
         const response = await req.json()
-        let {field, value, offset} = response;
+        let {field, value, offset, bytes } = response;
+        console.log(field, value, offset, bytes)
         let results = []
         if(field == "owner"){
             results = await Graph.searchByAddress(process.env.SUBGRAPH_URL, field, value, offset)
@@ -22,11 +23,20 @@ export async function POST(req) {
         }
         else{
             results = await Graph.searchGraph(process.env.SUBGRAPH_URL, field, value, offset)
-            console.log(results)
+            let exactResult = undefined
+            if(offset == 0 && bytes){
+                exactResult = await Graph.searchBytes(process.env.SUBGRAPH_URL, bytes)
+            }
+            
             if(results.data){
-                //let joinedResults = results.data.exact.concat(results.data.search)
+                let returnResults = results.data?.search
+                if(exactResult?.data?.search && exactResult?.data?.search.length > 0){
+                    let exactObj = exactResult?.data?.search[0]
+                    exactObj["exact"] = true
+                    returnResults = [exactObj , ...returnResults]
+                }
     
-                return NextResponse.json({results: results.data.search}, {status: 200});
+                return NextResponse.json({results: returnResults}, {status: 200});
             } else {
                 return NextResponse.json({error: {message: "No results found"}}, {status: 200});
             }

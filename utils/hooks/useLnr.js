@@ -215,7 +215,7 @@ export function useLnrCallOld(functionName, ...args) {
         setData(response);
       } catch (error) {
         console.error('Error calling LNR function:', error);
-        setError(error);
+        setError(error); 
       } finally {
         setLoading(false);
       }

@@ -15,6 +15,7 @@ export function hydrateNames(items){
     if(!items){
         return []
     }
+    items = removeDuplicatesByKey(items, "domainBytecode")
     return items.map((item) => {
         let normalized = false
         let valid = false
@@ -384,3 +385,34 @@ export async function checkOwner(signer, name){
 
 }
 
+export function getBytes(nameString){
+    try{
+        if(nameString.endsWith(".og")){
+            nameString = nameString.slice(0,-3)
+        }
+        let bytes = lnr.utils.stringToBytes32(nameString)
+        return bytes
+    } catch(e){
+        return undefined
+        //console.log(e)
+    }
+}
+
+function removeDuplicatesByKey(arr, key) {
+    // Track unique values using an object
+    let uniqueValues = {};
+    // Filter out duplicate objects based on the specified key
+    return arr.filter(obj => {
+        // Check if the object has the specified key
+        if (obj.hasOwnProperty(key)) {
+            if (!uniqueValues.hasOwnProperty(obj[key])) {
+                uniqueValues[obj[key]] = true;
+                return true;
+            }
+        } else {
+            // Handle case where key does not exist in the object
+            return true;
+        }
+        return false;
+    });
+}
