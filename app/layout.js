@@ -23,8 +23,18 @@ export default function RootLayout({ children }) {
 
   // const initialState = cookieToInitialState(config, headers().get('cookie'))
 
-  if(global?.window !== "undefined"){
+  // if(global?.window !== "undefined"){
+  //   initialState = cookieToInitialState(config, headers().get('cookie'))
+  // }
+
+  if (typeof localStorage !== 'undefined') {
     initialState = cookieToInitialState(config, headers().get('cookie'))
+  } else if (typeof sessionStorage !== 'undefined') {
+    // Fallback to sessionStorage if localStorage is not supported
+    initialState = cookieToInitialState(config, headers().get('cookie'))
+  } else {
+    // If neither localStorage nor sessionStorage is supported
+    console.log('Web Storage is not supported in this environment.');
   }
 
   // useEffect(() => {
