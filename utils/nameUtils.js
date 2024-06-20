@@ -117,7 +117,7 @@ export async function callLnrClass(provider, functionName, ...args){
       } catch (error) {
 
         toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
-        throw error; // Re-throw the error for further handling
+        console.log(error); // Re-throw the error for further handling
       }
 
 }
@@ -340,3 +340,47 @@ export async function resolveOrReturn(signer, addressOrName){
         return(undefined)
       }
   }
+
+
+export function checkValid(nameString){
+    const lnr = new LNR(ethers, undefined)
+
+    try{
+
+        let isValid = lnr.isNormalizedName(nameString)
+        if(isValid ){
+            return(isValid)
+        } else{
+            return(false)
+        }
+
+    } catch(e){
+        console.log(e)
+        return(false)
+    }
+
+}
+
+
+export async function checkOwner(signer, name){
+
+    try{
+        let ownerResp = await callLnrClass(signer, "owner", name)
+        console.log(ownerResp)
+        if(ownerResp && ownerResp.length==2 && !ethers.utils.isAddress(ownerResp[0])){
+            return(false)
+        }
+        if(ownerResp && ownerResp.length==2 && ethers.utils.isAddress(ownerResp[0])){
+            return(true)
+        }
+        else{
+            return(false)
+        }
+
+    } catch(e){
+        toast.error("Error checking owner")
+        return(true)    
+    }
+
+}
+

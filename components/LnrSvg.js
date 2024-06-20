@@ -3,7 +3,7 @@
 import {useRouter} from 'next/navigation'
 
 export default function LnrSvg({item, classVars, mode = undefined}) { 
-
+ 
   const router = useRouter();
 
   const handleClick = () => {
@@ -21,6 +21,7 @@ export default function LnrSvg({item, classVars, mode = undefined}) {
     let og = ""
 
     if(item.normalized == true){
+
         color1 = "#bd8eff"
         color2 = "#69e0ff"
         warninghint = ""
