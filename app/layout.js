@@ -10,7 +10,7 @@ import { config } from '@/config'
 import Web3ModalProvider from '@/context'
 
 const inter = Inter({ subsets: ["latin"] });
-
+ 
 export const metadata = {
   title: "Linagee Name Registrar",
   description: "Explore the Linagee Name Registrar and mint your own Linagee Name.",
