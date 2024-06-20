@@ -16,8 +16,8 @@
     "@linagee/lnr-ethers-react": "^1.2.0",
     "@nextui-org/react": "^2.2.10",
     "@tanstack/react-query": "^5.29.0",
-    "@web3modal/ethers5": "^4.1.6",
-    "@web3modal/wagmi": "^4.1.6",
+    "@web3modal/ethers5": "^5.0.2",
+    "@web3modal/wagmi": "^5.0.2",
     "clsx": "^2.1.0",
     "ethers": "5.7.2",
     "flowbite-react": "^0.7.2",
@@ -35,8 +35,8 @@
     "react-toggle-dark-mode": "^1.1.1",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^2.2.1",
-    "viem": "^2.9.15",
-    "wagmi": "^2.5.19"
+    "viem": "^2.16.0",
+    "wagmi": "^2.10.4"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.13",
