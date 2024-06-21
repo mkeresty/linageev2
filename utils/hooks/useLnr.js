@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { hydrateNames, getController , getOwner} from "@/utils/nameUtils";
-
+import { useEthers } from '@/context/ethersProvider';
 
 
 import { useState, useEffect } from 'react';
@@ -117,34 +117,43 @@ export function useLnrName(bytes) {
   const [error, setError] = useState(null);
 
 
-  const { walletProvider } = useWeb3ModalProvider();
+  //const { walletProvider } = useWeb3ModalProvider();
+  //console.log("wallet provier ", walletProvider)
+
+  const {walletProvider} = useEthers()
+  console.log("provider in ethes ", walletProvider)
+  
 
 
 
   useEffect(() => {
     const fetchData = async () => {
-      if(!walletProvider){
-        console.log("No provider", walletProvider)
-        return
-      }
-      let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
-      //let ethersProvider = new ethers.providers.AlchemyProvider("homestead", [process.env.NEXT_PUBLIC_ALCHEMY_API_KEY])
-      let ethersSigner = ethersProvider.getSigner()
-      let provider = undefined
-      if(ethersSigner){
-        provider = ethersSigner
-      } else if(ethersProvider) {
-        provider = ethersProvider
-      } else{
-        console.log("No provider")
-      }
-      setLoading(true);
-      setError(null);
 
 
       
 
       try {
+        if(!walletProvider){
+          console.log("No provider", walletProvider)
+          return
+        }
+        let ethersProvider = new ethers.providers.Web3Provider(walletProvider)
+        console.log("ethers provider ", ethersProvider)
+        //let ethersProvider = new ethers.providers.AlchemyProvider("homestead", [process.env.NEXT_PUBLIC_ALCHEMY_API_KEY])
+        let ethersSigner = ethersProvider.getSigner()
+        let provider = undefined
+        if(ethersSigner){
+          provider = ethersSigner
+        } else if(ethersProvider) {
+          provider = ethersProvider
+        } else{
+          console.log("No provider")
+        }
+        setLoading(true);
+        setError(null);
+  
+        console.log("provier here ", provider)
+  
             let hyd =  hydrateNames([{"domainBytecode": bytes}])
             if(hyd){
               setHydrated(hyd[0])

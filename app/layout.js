@@ -4,12 +4,14 @@ import "./globals.css";
 import {Providers} from "@/app/providers";
 import Footer from "@/components/Footer";
 import NavbarExpandable from "@/components/Modals/NavbarExpandable";
+import WagmiModalProvider from "./wagmicontext";
+import Web3ModalProvider from '@/context/web3modal'
 import { headers } from 'next/headers'
 import { cookieToInitialState } from 'wagmi'
 import { config } from '@/config'
-import Web3ModalProvider from '@/context'
-
 const inter = Inter({ subsets: ["latin"] });
+
+import { EthersProvider } from "@/context/ethersProvider";
  
 export const metadata = {
   title: "Linagee Name Registrar",
@@ -18,10 +20,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   //const [initialState, setInitialState] = useState()
+    // useEffect(() => {
+  //   const initialStateResp = cookieToInitialState(config, headers().get('cookie'))
+  //   setInitialState(initialStateResp)
+  //   }, []);
   //let initialState = undefined
 
 
   const initialState = cookieToInitialState(config, headers().get('cookie'))
+  //let headerCookie = headers().get('cookie')
 
   // // if(global?.window !== "undefined"){
   // //   initialState = cookieToInitialState(config, headers().get('cookie'))
@@ -37,24 +44,25 @@ export default function RootLayout({ children }) {
   //   console.log('Web Storage is not supported in this environment.');
   // }
 
-  // // useEffect(() => {
-  // //   const initialStateResp = cookieToInitialState(config, headers().get('cookie'))
-  // //   setInitialState(initialStateResp)
-  // //   }, []);
+
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} flex flex-col min-h-screen mb-20 sm:mb-0 `}>
-      <Web3ModalProvider initialState={initialState}> 
-        <Providers>
+      <Providers>
+        <WagmiModalProvider initialState={initialState}>
+        <EthersProvider>
+        
           {/* <Header /> */}
           <NavbarExpandable />
           <div className={"mb-auto p-x-1 sm:p-x-0 overflow-auto"}>
             {children}
           </div>
           <Footer />
+        
+        </EthersProvider>
+        </WagmiModalProvider>
         </Providers>
-        </Web3ModalProvider>
       </body>
     </html>
   );

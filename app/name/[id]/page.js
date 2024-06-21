@@ -14,7 +14,8 @@ import { InfinitySpin } from "react-loader-spinner";
 import { IoIosMore } from "react-icons/io";
 import StandardModal from "@/components/Modals/StandardModal";
 import { TbProgressBolt } from "react-icons/tb";
-
+import { useWeb3ModalProvider } from "@web3modal/ethers5/react";
+import { useEthers } from "@/context/ethersProvider";
 
 
 export default function Name({params}){

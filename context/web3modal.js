@@ -3,10 +3,12 @@
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 
 // 1. Get projectId at https://cloud.walletconnect.com
-const projectId = '201a506f0bc8ee899c4f376a51a35c24'
+export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_ID
+
+if (!projectId) throw new Error('Project ID is not defined') 
 
 // 2. Set chains
-const mainnet = {
+const mainnet = { 
   chainId: 1,
   name: 'Ethereum',
   currency: 'ETH',
@@ -45,6 +47,6 @@ createWeb3Modal({
 
 })
 
-export function Web3Modal({ children }) {
+export default function Web3ModalProvider({ children }) {
   return children
 }

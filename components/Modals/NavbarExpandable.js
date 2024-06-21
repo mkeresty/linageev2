@@ -7,10 +7,9 @@ import ThemeChanger from "@/components/ThemeChanger";
 import { useCurrentWidth } from "@/utils/hooks/useCurrentWidth";
 import Hamburger from 'hamburger-react'
 // import { useWeb3Modal } from '@web3modal/ethers5/react'
-import { useWeb3Modal } from '@web3modal/ethers5/react'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { FaWallet, FaUser  } from "react-icons/fa";
 //import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
-
 import { useAccount } from 'wagmi'
 
 
