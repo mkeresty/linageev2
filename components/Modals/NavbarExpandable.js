@@ -7,7 +7,7 @@ import ThemeChanger from "@/components/ThemeChanger";
 import { useCurrentWidth } from "@/utils/hooks/useCurrentWidth";
 import Hamburger from 'hamburger-react'
 // import { useWeb3Modal } from '@web3modal/ethers5/react'
-import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useWeb3Modal } from '@web3modal/ethers5/react'
 import { FaWallet, FaUser  } from "react-icons/fa";
 //import { useWeb3ModalAccount } from '@web3modal/ethers5/react'
 
@@ -26,7 +26,8 @@ export default function NavbarExpandable() {
     const links = [
 
       { id: 2, name: "Names", path: "/names" },
-      { id: 3, name: "Mint", path: "/mint" },
+      { id: 3, name: "Reserve", path: "/reserve" },
+      { id: 4, name: "About", path: "/about" },
     ];
     
 

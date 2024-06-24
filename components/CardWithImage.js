@@ -9,6 +9,7 @@ import LnrSvg from "@/components/LnrSvg";
 import FlipCard, { FrontCard, BackCard } from "@/components/FlipCard";
 import InfoCard from "@/components/InfoCard";
 import {useRouter} from "next/navigation"
+import LNR from "@/utils/lnrethers";
 
 
 export default function CardWithImage({item, mode}) {
@@ -16,9 +17,9 @@ export default function CardWithImage({item, mode}) {
   const [hasError, setHasError] = useState(false);
   let name = item.name || item?.collection + item?.identifier;
 
-  let img_url = item?.contract == "0x2cc8342d7c8bff5a213eb2cde39de9a59b3461a7" ? `http://api.linagee.vision:8080/image/${item?.identifier}` : item.image_url
+  let img_url = item?.contract == LNR.WRAPPER_ADDRESS ? `http://api.linagee.vision:8080/image/${item?.identifier}` : item.image_url
 
-  let metadata_url = item?.contract == "0x2cc8342d7c8bff5a213eb2cde39de9a59b3461a7" ? `http://api.linagee.vision:8080/${item?.identifier}` : item.metadata_url
+  let metadata_url = item?.contract == LNR.WRAPPER_ADDRESS ? `http://api.linagee.vision:8080/${item?.identifier}` : item.metadata_url
 
 
   const [isFlipped, setIsFlipped] = useState(false);
@@ -29,16 +30,20 @@ export default function CardWithImage({item, mode}) {
    }
 
    const routeName = () =>{
-    console.log("route name", item)
     if(mode == "names"){
-      router.push(`/names/${item.domainBytecode}`)
+      router.push(`/name/${item.domainBytecode}`)
     }
    }
 
 
   return (
     <CardContainer className="inter-var sm:w-[17rem] px-3 w-full h-full">
-    <CardBody   className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-blue-500/[0.3] dark:bg-gray-800 dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl  p-6 border  hover:cursor-pointer">
+
+    <CardBody routeName={routeName} className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-blue-500/[0.3] dark:bg-gray-800 dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl  p-6 border  hover:cursor-pointer">
+    {item.exact && (
+      <span className="absolute right-1 top-3.5 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Exact match</span>
+
+    )}
       <CardItem
         translateZ="50"
         className="text-lg font-bold text-neutral-600 dark:text-white"
@@ -101,19 +106,28 @@ export default function CardWithImage({item, mode}) {
       </FlipCard>
       <div className="flex justify-between items-center mt-5">
 
+
         <CardItem
           translateZ={20}
           as="button"
           className="px-2 rounded-xl text-lg  text-neutral-600 font-normal dark:text-white"
         >
-          <SiOpensea />
+          {mode == "names" &&(
+          <IoArrowRedoSharp onClick={handleFlip} />
+          )}
         </CardItem>
         <CardItem
           translateZ={20}
           as="button"
           className="px-2 rounded-xl text-lg  text-neutral-600 font-normal dark:text-white"
         >
-          <IoArrowRedoSharp onClick={handleFlip} />
+          {item.opensea_url && (
+            <a target="_blank" href={item.opensea_url}>
+              <SiOpensea />
+
+            </a>
+          )}
+          
         </CardItem>
       </div>
     </CardBody>

@@ -10,7 +10,7 @@ import {Pagination} from "@nextui-org/react";
 import { useSearchParams, useRouter } from 'next/navigation'
 import next from "next";
 import { parse } from "@ethersproject/transactions";
-
+import { useTheme } from "next-themes"
 
 
 
@@ -18,6 +18,7 @@ export default function PaginationComponent({props}) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentOffset = searchParams.get('offset') || 0;
+    const { theme } = useTheme();
 
     const {itemLength, nextOffset, loading, path, searchRequest} = props
 
@@ -129,10 +130,10 @@ export default function PaginationComponent({props}) {
     className=""
     classNames={{
       next: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff] hover:!opacity-30 hover:text-white hover:!scale-110",
-      prev: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff] hover:!opacity-30 hover:text-white hover:!scale-110",
-      item: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff] hover:!opacity-30 hover:text-white hover:!scale-110",
+      prev: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff]  hover:!opacity-30 hover:text-white hover:!scale-110",
+      item: "hover:!bg-gradient-to-b  hover:!from-[#bd8eff] hover:!to-[#69e0ff]  hover:!opacity-30 hover:text-white hover:!scale-110",
       cursor:
-        "bg-gradient-to-b !shadow-md dark:!shadow-blue-500/[0.5] from-[#bd8eff] to-[#69e0ff] text-white font-bold hover:!scale-110 hover:!border-0 ",
+       ` !shadow-md dark:!shadow-blue-500/[0.5] bg-white text-gray-800 font-bold hover:!scale-110 hover:!border-0 ${theme == "dark" ? " bg-gray !text-white border border-gray-700" : "bg-white"}`,
     }}
   />
   );

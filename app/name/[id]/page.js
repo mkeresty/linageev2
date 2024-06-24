@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLnrName } from "@/utils/hooks/useLnr";
 import LnrSvg from "@/components/LnrSvg";
 import { IoIosGift } from "react-icons/io";
@@ -13,6 +13,9 @@ import CopyClipboard from "@/components/CopyClipboard";
 import { InfinitySpin } from "react-loader-spinner";
 import { IoIosMore } from "react-icons/io";
 import StandardModal from "@/components/Modals/StandardModal";
+import { TbProgressBolt } from "react-icons/tb";
+import { useWeb3 } from "@/context/ethersProvider";
+
 
 export default function Name({params}){
 
@@ -38,7 +41,7 @@ export default function Name({params}){
 
 {!res.loading && !res.error &&(
 
-<section className="py-4 px-4 bg-white md:py-10 dark:bg-gray-900 antialiased rounded-md ">
+<section className="py-4 px-4 bg-white md:py-10 dark:bg-gray-900 antialiased rounded-md shadow-lg">
 <div className="h-6 w-[100%] top-0 flex items-center justify-end ">
 <IoIosMore 
 onClick={()=>setIsVisible(!isVisible)}
@@ -58,7 +61,7 @@ className="w-4 h-4 text-gray-500 dark:text-white hover:scale-110 hover:text-gray
         </div>
         
 
-        <div className="mt-6 sm:mt-8 lg:mt-0">
+        <div className="mt-6 sm:mt-8 lg:mt-0"> 
 
           <h1
             className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white"
@@ -79,6 +82,12 @@ className="w-4 h-4 text-gray-500 dark:text-white hover:scale-110 hover:text-gray
                     <span className="flex flex-row items-center gap-1">
                     <FaBoxOpen className="w-4 h-4" />
                     Unwrapped
+                    </span>
+                    )}
+                {(res.wrapped == "In progress") && (
+                    <span className="flex flex-row items-center gap-1">
+                    <TbProgressBolt className="w-4 h-4" />
+                    Wrapping in progress
                     </span>
                     )}
                 {/* Normalized */}

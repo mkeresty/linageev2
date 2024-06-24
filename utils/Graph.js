@@ -106,6 +106,34 @@ class Graph {
       }
       
     
+      static async searchBytes(endpoint, bytes) {
+
+        const resp = await this.callAPI(endpoint, JSON.stringify({
+          query: `
+            query {
+              search: domains(where: {domainBytecode: "${bytes}"}, orderBy: registerIndex, first: 1) {
+                domainUtf8
+                domainBytecode
+                owner {
+                    id
+                }
+                wrappedDomainOwner {
+                    id
+                }
+                primary
+                subRegistrar
+                content
+                reserveDate
+                wrapped
+                registerIndex
+                },
+              
+            }
+          `
+        }));
+      
+        return resp;
+      }
 
 
  

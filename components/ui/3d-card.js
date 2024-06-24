@@ -10,6 +10,7 @@ import React, {
   useEffect,
 } from "react";
 
+
 const MouseEnterContext = createContext(undefined);
 
 export const CardContainer = ({
@@ -66,20 +67,23 @@ export const CardContainer = ({
           {children}
         </div>
       </div>
-    </MouseEnterContext.Provider>
+    </MouseEnterContext.Provider> 
   );
 };
 
 export const CardBody = ({
   children,
   className,
+  routeName=undefined
 }) => {
+  
   return (
     <div
       className={cn(
         "h-96 w-96 [transform-style:preserve-3d]  [&>*]:[transform-style:preserve-3d]",
         className
       )}
+      onClick={routeName}
     >
       {children}
     </div>

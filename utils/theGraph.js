@@ -5,14 +5,12 @@ async function loopGraph(address, type='owner'){
     var offset = 0;
     for ( let i = 0; i>=0; i++) {
         var tokens = await theGraph(address, offset);
-        console.log(i*100)
         if(tokens && tokens.errors == undefined){
             var resp = tokens['data']['domains'] 
             if(resp.length < 1){
                 return(gdata)
             }
-            console.log(resp)
-            console.log('resppp', resp.slice(-1)[0].registerIndex)
+
             var offset = resp.slice(-1)[0].registerIndex
             console.log(offset)
             gdata.push(...resp);
@@ -60,7 +58,7 @@ async function searchNameString(field, value, offset){
         body: JSON.stringify({
           query: `
           query {
-            exact: domains(where: {${field}: "${value}"}) {
+            exact: domains(where: {${field}: "${value}"}) { 
                 domainUtf8,
                 domainBytecode,
                   owner {
@@ -101,3 +99,39 @@ async function searchNameString(field, value, offset){
   
       return(resp)
   }
+
+
+
+
+async function searchNameBytes(bytes){
+  const resp = await fetch(`https://api.studio.thegraph.com/query/42000/linagee/v0.0.1`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: `
+        query {
+          exact: domains(where: {domainBytecode: "${bytes}"}) { 
+              domainUtf8,
+              domainBytecode,
+                owner {
+                  id
+                },
+                wrappedDomainOwner {
+                  id
+                },
+                primary,
+                subRegistrar,
+                content,
+                reserveDate,
+                wrapped
+          }
+      }
+        
+    }`
+      }),
+    }).then((res)=>{
+        return(res.json())
+    })
+
+    return(resp)
+}

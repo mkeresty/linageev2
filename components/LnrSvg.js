@@ -3,11 +3,10 @@
 import {useRouter} from 'next/navigation'
 
 export default function LnrSvg({item, classVars, mode = undefined}) { 
-
+ 
   const router = useRouter();
 
   const handleClick = () => {
-    console.log("clicked", mode)
     if(mode == "names"){
       router.push(`/name/${item.domainBytecode}`)
     }
@@ -21,6 +20,7 @@ export default function LnrSvg({item, classVars, mode = undefined}) {
     let og = ""
 
     if(item.normalized == true){
+
         color1 = "#bd8eff"
         color2 = "#69e0ff"
         warninghint = ""

@@ -5,8 +5,7 @@ import { ethers } from 'ethers';
 import { lnr, getAddress, getPrimaryName} from '@linagee/lnr-ethers-react';
 import { toast } from 'react-hot-toast';
 import LNR from "@/utils/lnrethers";
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
-
+import { handleEthersError } from '@/utils/etherutils';
 
 
 export function hydrateNames(items){
@@ -14,6 +13,7 @@ export function hydrateNames(items){
     if(!items){
         return []
     }
+    items = removeDuplicatesByKey(items, "domainBytecode")
     return items.map((item) => {
         let normalized = false
         let valid = false
@@ -77,20 +77,51 @@ export async function resolveOrReturnOld(walletProvider, nameAddress){
 
 
 export async function callLnrClass(provider, functionName, ...args){
-
     const lnr = new LNR(ethers, provider);
-
-
     try {
-  
-        const response = await lnr[functionName](...args);
-        return response; // Return the successful response
+        if(functionName == "wrap"){
+            let response = await wrapName(provider, ...args)
+            if (response && response.wait) {
+                const toastId = toast.loading('Transaction pending...');
+                const receipt = await response.wait();
+                toast.dismiss(toastId);
+                return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+              } else {
+                return(response)
+              }
+        }
+        if(args[0] == undefined){
+            let response = await lnr[functionName]();
+            if (response && response.wait) {
+                const toastId = toast.loading('Transaction pending...');
+                const receipt = await response.wait();
+                toast.dismiss(toastId);
+                return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+              } else {
+                return(response)
+              }
+        }
+        else{
+            let response = await lnr[functionName](...args);
+            if (response && response.wait) {
+                const toastId = toast.loading('Transaction pending...');
+                const receipt = await response.wait();
+                toast.dismiss(toastId);
+                return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+              } else {
+                return(response)
+              }
+        }
+
       } catch (error) {
-        toast.error(error.message); // Display error notification using react-hot-toast
-        throw error; // Re-throw the error for further handling
+
+        //toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
+        console.log(error); // Re-throw the error for further handling
       }
 
 }
+
+
 
 export async function getController(provider, bytes){
     const lnr = new LNR(ethers, provider);
@@ -106,17 +137,39 @@ export async function getController(provider, bytes){
     return(undefined)
 }
 
-export async function getOwner(provider, nameBytes){
-    const lnr = new LNR(ethers, provider);
+export async function wrapName(signer, nameBytes){
+    const lnr = new LNR(ethers, signer)
     try{
+        return await lnr.wrapperContract.wrap(nameBytes)
+
+    } catch (e){
+        return(e)
+    }
+}
+
+export async function getOwner(provider, nameBytes){
+    
+    try{
+        const lnr = new LNR(ethers, provider);
         return lnr.linageeContract.owner(nameBytes).then(function(result) {
         if (result === ethers.constants.AddressZero)
             return null;
         else {
-            if (result !== "0x2Cc8342d7c8BFf5A213eb2cdE39DE9a59b3461A7") {
+            if (result !== LNR.WRAPPER_ADDRESS) {
             return {owner: result, wrapped: "unwrapped", tokenId: undefined};
             } else {
             return lnr.wrapperContract.nameToId(nameBytes).then(function(tokenId) {
+                if(!Number(tokenId._hex)){
+                    return lnr.wrapperContract.waitForWrap(nameBytes).then(function(waitForWrap){
+                        if(waitForWrap){
+                            return {owner: waitForWrap, wrapped: "In progress", tokenId: undefined}
+                        }
+                        else{
+                            return {owner: undefined, wrapped: undefined, tokenId: undefined}
+                        }
+                    })
+                    
+                }
                 return lnr.wrapperContract.ownerOf(tokenId).then(function(tokenOwner) {
                 return {owner: tokenOwner, wrapped: "wrapped", tokenId: Number(tokenId._hex)};
                 });
@@ -128,3 +181,244 @@ export async function getOwner(provider, nameBytes){
         return(undefined)
     }
   }
+
+
+
+export async function getStatus(signer, domain, bytes){
+    let address = undefined
+    let status = undefined
+    let generalStatus = undefined
+    let owner = undefined
+
+    if(signer){
+        try{
+            address = await signer.getAddress()
+        } catch(e){
+            console.log(e)
+        }
+  
+    }
+
+
+    let ownerObj = await getOwner(signer, bytes)
+    if(ownerObj && (ownerObj.owner == address || ownerObj.owner == LNR.WRAPPER_ADDRESS)){
+        owner = ownerObj.owner
+        generalStatus = ownerObj.wrapped
+    }
+
+    
+    let waitForWrapInitial = await callLnrClass(signer, "waitForWrap", domain)
+
+    if(waitForWrapInitial !== address && owner == address && generalStatus == "unwrapped"){
+        status = "readyForCreateWrapper"
+    }
+    if(waitForWrapInitial !== address && owner == address && generalStatus == "wrapped"){
+        status = "readyForUnwrap"
+    }
+
+    if(waitForWrapInitial == address && owner == address){
+        status = "readyForTransfer"
+    }
+    if(waitForWrapInitial == address && generalStatus == "In progress"){
+        status = "readyForWrap"
+    }
+
+    return(status)
+
+}
+
+
+export async function transferByTokenId(signer, fromAddress, toAddress, tokenId){
+    const lnr = new LNR(ethers, signer)
+    try{
+        console.log("invoking transder")
+        let response =  await lnr.wrapperContract.transferFrom(fromAddress, toAddress, tokenId)
+        console.log(response)
+        if (response && response.wait) {
+            const toastId = toast.loading('Transaction pending...');
+            const receipt = await response.wait();
+            toast.dismiss(toastId);
+            return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+          } else {
+            return(response)
+          }
+
+    } catch (e){
+        toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
+        return(e)
+    }
+}
+
+export async function transferByDomainBytecode(signer, toAddress, domainBytecode){
+    const lnr = new LNR(ethers, signer)
+    try{
+        let response =  await lnr.linageeContract.transfer(domainBytecode, toAddress)
+        if (response && response.wait) {
+            const toastId = toast.loading('Transaction pending...');
+            const receipt = await response.wait();
+            toast.dismiss(toastId);
+            return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+          } else {
+            return(response)
+          }
+
+    } catch (error){
+        toast.error(handleEthersError(error?.reason)); // Display error notification using react-hot-toast
+        return(e)
+    }
+}
+
+
+
+export async function resolveOrReturn(signer, addressOrName){
+    const lnr = new LNR(ethers, signer)
+    try {
+
+        if(ethers.utils.isAddress(addressOrName)){
+          return(addressOrName)
+        }
+        else{
+            let nameArg
+            if(addressOrName.endsWith(".og")){
+              nameArg = addressOrName
+              }
+            else{
+              nameArg = addressOrName + ".og"
+            }
+            let addressResponse = await lnr.resolveName(nameArg)
+            if(ethers.utils.isAddress(addressResponse)){
+                return(addressResponse)
+            }
+            else{
+                return(undefined)
+            }
+        }
+      
+      } catch (error) {
+        
+        return(undefined)
+      }
+}
+
+
+  export async function handleTextRecord(provider, functionName, _name, key, value = undefined) {
+        try {
+            const abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"beacon","type":"address"}],"name":"BeaconUpgraded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"version","type":"uint8"}],"name":"Initialized","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"name","type":"bytes32"},{"indexed":true,"internalType":"address","name":"controller","type":"address"}],"name":"NewController","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"name","type":"bytes32"},{"indexed":true,"internalType":"address","name":"primary","type":"address"}],"name":"NewPrimary","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"name","type":"bytes32"},{"indexed":true,"internalType":"string","name":"key","type":"string"},{"indexed":true,"internalType":"string","name":"value","type":"string"}],"name":"SetTextRecord","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"controller","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"}],"name":"getResolveAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"string","name":"_key","type":"string"}],"name":"getTextRecord","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"lnrAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"primary","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"proxiableUUID","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_domain","type":"string"}],"name":"resolve","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"resolveAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"address","name":"_controller","type":"address"}],"name":"setController","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"}],"name":"setPrimary","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"string","name":"_key","type":"string"},{"internalType":"string","name":"_value","type":"string"}],"name":"setTextRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"}],"name":"unsetController","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unsetPrimary","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"string","name":"_key","type":"string"}],"name":"unsetTextRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"userTextRecords","outputs":[{"internalType":"bool","name":"initialized","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_name","type":"bytes32"},{"internalType":"address","name":"_addr","type":"address"}],"name":"verifyIsNameOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"}]
+            const contract = new ethers.Contract(LNR.RESOLVER_ADDRESS, abi, provider);
+
+            if(_name.endsWith(".og")){
+                _name = _name.slice(0,-3)
+            }
+            const parsedName = ethers.utils.formatBytes32String(_name);
+
+            if(functionName == "getTextRecord"){
+                let response = await contract[functionName](parsedName, key);
+                return(response)
+            }
+            if(functionName == "unsetTextRecord"){
+                let response = await contract[functionName](parsedName, key);
+                if (response && response.wait) {
+                    const toastId = toast.loading('Transaction pending...');
+                    const receipt = await response.wait();
+                    toast.dismiss(toastId);
+                    return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+                  } else {
+                    return(response)
+                  }
+            }
+
+            if(functionName == "setTextRecord"){
+                let response = await contract[functionName](parsedName, key, value);
+                if (response && response.wait) {
+                    const toastId = toast.loading('Transaction pending...');
+                    const receipt = await response.wait();
+                    toast.dismiss(toastId);
+                    return(receipt.status === 1 ? 'Transaction Successful' : 'Transaction Failed');
+                  } else {
+                    return(response)
+                  }
+            }
+            return(undefined)
+
+
+      
+      } catch (error) {
+        console.log("error ", error)
+        return(undefined)
+      }
+  }
+
+
+export function checkValid(nameString){
+    const lnr = new LNR(ethers, undefined)
+
+    try{
+
+        let isValid = lnr.isNormalizedName(nameString)
+        if(isValid ){
+            return(isValid)
+        } else{
+            return(false)
+        }
+
+    } catch(e){
+        console.log(e)
+        return(false)
+    }
+
+}
+
+
+export async function checkOwner(signer, name){
+
+    try{
+        let ownerResp = await callLnrClass(signer, "owner", name)
+        console.log(ownerResp)
+        if(ownerResp && ownerResp.length==2 && !ethers.utils.isAddress(ownerResp[0])){
+            return(false)
+        }
+        if(ownerResp && ownerResp.length==2 && ethers.utils.isAddress(ownerResp[0])){
+            return(true)
+        }
+        else{
+            return(false)
+        }
+
+    } catch(e){
+        toast.error("Error checking owner")
+        return(true)    
+    }
+
+}
+
+export function getBytes(nameString){
+    try{
+        if(nameString.endsWith(".og")){
+            nameString = nameString.slice(0,-3)
+        }
+        let bytes = lnr.utils.stringToBytes32(nameString)
+        return bytes
+    } catch(e){
+        return undefined
+        //console.log(e)
+    }
+}
+
+function removeDuplicatesByKey(arr, key) {
+    // Track unique values using an object
+    let uniqueValues = {};
+    // Filter out duplicate objects based on the specified key
+    return arr.filter(obj => {
+        // Check if the object has the specified key
+        if (obj.hasOwnProperty(key)) {
+            if (!uniqueValues.hasOwnProperty(obj[key])) {
+                uniqueValues[obj[key]] = true;
+                return true;
+            }
+        } else {
+            // Handle case where key does not exist in the object
+            return true;
+        }
+        return false;
+    });
+}

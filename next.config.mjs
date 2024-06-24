@@ -6,6 +6,10 @@ const nextConfig = {
       fullUrl: false,
     },
   },
+  webpack: config => {
+    config.externals.push('pino-pretty', 'lokijs', 'encoding')
+    return config
+  },
     images: {
         remotePatterns: [
           {
@@ -15,15 +19,15 @@ const nextConfig = {
           
         ],
       },
-      async redirects() {
-        return [
-            {
-                source: '/mint',
-                destination: '/comingsoon',
-                permanent: true,
-            },
-        ]
-    },
+    //   async redirects() {
+    //     return [
+    //         {
+    //             source: '/mint',
+    //             destination: '/comingsoon',
+    //             permanent: true,
+    //         },
+    //     ]
+    // },
 };
 
 export default nextConfig;
