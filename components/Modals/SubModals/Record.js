@@ -2,17 +2,15 @@
 
 import { useState, Fragment } from "react"
 import { toast } from 'react-hot-toast';
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { getCurrentSigner} from "@/utils/etherutils";
 import { motion} from "framer-motion";
 import { callLnrClass, handleTextRecord } from "@/utils/nameUtils";
 import { FaSearch } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
-
+import { useWeb3 } from "@/context/ethersProvider";
 
 export default function Record({name, auth}){
 
-    const { walletProvider } = useWeb3ModalProvider();
+    const {provider, signer} = useWeb3()
 
     const [loading, setLoading] = useState(true)
 
@@ -24,7 +22,6 @@ export default function Record({name, auth}){
         setLoading(true)
 
         try{
-            const {address, signer} = await getCurrentSigner(walletProvider)
             let args
 
             if(action == "getTextRecord"){

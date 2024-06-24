@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getCurrentSigner} from "@/utils/etherutils";
 import Transfer from "@/components/Modals/SubModals/Transfer"
 import Wrap from "@/components/Modals/SubModals/Wrap"
 import Resolve from "@/components/Modals/SubModals/Resolve"
@@ -13,18 +12,17 @@ import { BsSendFill } from "react-icons/bs";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import { RiEdit2Fill } from "react-icons/ri";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
-
+import { useWeb3 } from "@/context/ethersProvider";
 
 
 
 export default function StandardModal({isVisible, setIsVisible, name}) {
-  const { walletProvider } = useWeb3ModalProvider();
 
   const [view, setView] = useState("menu")
   const [load, setLoading] = useState(false)
   const [auth, setAuth] = useState("")
   const [isDisabled, setIsDisabled] = useState({"menu": true, "wrapping": true, "transfer": true, "resolve": true, "record": false})
+  const {provider, signer} = useWeb3()
 
   const views = [
                 {viewName: "menu", viewTitle: "Menu", viewIcon: undefined, viewMore: undefined},
@@ -43,7 +41,8 @@ export default function StandardModal({isVisible, setIsVisible, name}) {
 
     const handleViews = async() =>{
       setLoading(true)
-      const {address, signer} = await getCurrentSigner(walletProvider)
+      
+      const address = await signer.getAddress()
       let validCheck = name.valid == true ? true : false
       if(address == name.controller && address!== name.owner){
         setIsDisabled({"menu": true, "wrapping": true, "transfer": true, "resolve": false, "record": false})

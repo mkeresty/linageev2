@@ -6,10 +6,9 @@ import { InfinitySpin } from "react-loader-spinner";
 import { callLnrClass, checkValid, checkOwner } from "@/utils/nameUtils";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
-import { getCurrentSigner} from "@/utils/etherutils";
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
 import { toast } from 'react-hot-toast';
 import BreadCrumbComponent from "@/components/BreadCrumbComponent";
+import { useWeb3 } from "@/context/ethersProvider";
 
 
 export default function Reserve(){
@@ -18,8 +17,8 @@ export default function Reserve(){
     const [reqName, setReqName] = useState("name")
     const [valid, setValid] = useState(true)
     const [loading, setLoading] = useState(false)
+    const { provider, signer} = useWeb3();
 
-    const { walletProvider } = useWeb3ModalProvider();
 
     const handleInput = (nameInput) =>{
       setReqName(nameInput)
@@ -29,7 +28,7 @@ export default function Reserve(){
     }
 
     const check = async()=>{
-      const {address, signer} = await getCurrentSigner(walletProvider)
+
 
       let isOwned = await checkOwner(signer, reqName + ".og")
       if(isOwned){
@@ -41,7 +40,7 @@ export default function Reserve(){
     }
 
     const mint = async()=>{
-      const {address, signer} = await getCurrentSigner(walletProvider)
+
 
       if(!valid){
         return toast.error("Name is not normalized")

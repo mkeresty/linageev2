@@ -2,17 +2,16 @@
 
 import { useState } from "react"
 import { toast } from 'react-hot-toast';
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { getCurrentSigner} from "@/utils/etherutils";
 import LNR from "@/utils/lnrethers";
 import { getStatus, transferByTokenId, transferByDomainBytecode, resolveOrReturn } from "@/utils/nameUtils";
 import { motion} from "framer-motion";
 import { IoMdSend } from "react-icons/io";
-
+import { useWeb3 } from "@/context/ethersProvider";
 
 export default function Transfer({name}){
 
-    const { walletProvider } = useWeb3ModalProvider();
+
+    const {provider, signer} = useWeb3()
 
     const [loading, setLoading] = useState(true)
     const [recipient, setRecipient] = useState("")
@@ -21,7 +20,8 @@ export default function Transfer({name}){
         setLoading(true)
 
         try{
-            const {address, signer} = await getCurrentSigner(walletProvider)
+
+            const address = await signer.getAddress()
 
             const toAddress = await resolveOrReturn(signer, addressOrName)
             console.log("response here ", toAddress)
@@ -29,7 +29,7 @@ export default function Transfer({name}){
                 return toast.error("Please enter a valid address or name")
             } 
 
-            let statusResp = await getStatus(walletProvider, name.name, name.domainBytecode)
+            let statusResp = await getStatus(signer, name.name, name.domainBytecode)
             console.log("status is ", statusResp)
             if(statusResp == "readyForCreateWrapper" && toAddress == LNR.WRAPPER_ADDRESS){
                 toast.error("Don't transfer the name until the wrapper is created")

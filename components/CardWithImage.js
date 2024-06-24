@@ -41,7 +41,7 @@ export default function CardWithImage({item, mode}) {
 
     <CardBody routeName={routeName} className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-blue-500/[0.3] dark:bg-gray-800 dark:border-white/[0.2] border-black/[0.1]  h-auto rounded-xl  p-6 border  hover:cursor-pointer">
     {item.exact && (
-      <span class="absolute right-1 top-3.5 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Exact match</span>
+      <span className="absolute right-1 top-3.5 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Exact match</span>
 
     )}
       <CardItem

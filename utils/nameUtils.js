@@ -5,9 +5,7 @@ import { ethers } from 'ethers';
 import { lnr, getAddress, getPrimaryName} from '@linagee/lnr-ethers-react';
 import { toast } from 'react-hot-toast';
 import LNR from "@/utils/lnrethers";
-import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { handleEthersError } from '@/utils/etherutils';
-import { getCurrentSigner} from "@/utils/etherutils";
 
 
 export function hydrateNames(items){
@@ -186,13 +184,21 @@ export async function getOwner(provider, nameBytes){
 
 
 
-export async function getStatus(walletProvider, domain, bytes){
-
+export async function getStatus(signer, domain, bytes){
+    let address = undefined
     let status = undefined
     let generalStatus = undefined
     let owner = undefined
 
-    const {address, signer} = await getCurrentSigner(walletProvider)
+    if(signer){
+        try{
+            address = await signer.getAddress()
+        } catch(e){
+            console.log(e)
+        }
+  
+    }
+
 
     let ownerObj = await getOwner(signer, bytes)
     if(ownerObj && (ownerObj.owner == address || ownerObj.owner == LNR.WRAPPER_ADDRESS)){

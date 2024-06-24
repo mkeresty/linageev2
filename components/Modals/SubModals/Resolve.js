@@ -2,16 +2,14 @@
 
 import { useState, Fragment } from "react"
 import { toast } from 'react-hot-toast';
-import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { getCurrentSigner} from "@/utils/etherutils";
 import { motion} from "framer-motion";
 import { callLnrClass } from "@/utils/nameUtils";
-
+import { useWeb3 } from "@/context/ethersProvider";
 
 
 export default function Resolve({name, auth}){
 
-    const { walletProvider } = useWeb3ModalProvider();
+    const {provider, signer} = useWeb3()
 
     const [loading, setLoading] = useState(true)
 
@@ -23,7 +21,7 @@ export default function Resolve({name, auth}){
         setLoading(true)
 
         try{
-            const {address, signer} = await getCurrentSigner(walletProvider)
+            const address = await signer.getAddress()
             let args
 
             if(name.wrapped == "wrapped"){
@@ -88,7 +86,7 @@ console.log((name.primary !== (undefined || null)) , (auth !==( "owner" || "cont
                 <div className="relative">
                 <label  className="mb-2 text-sm font-medium text-gray-900  dark:text-white">Primary</label>
 
-                    <input disabled={name.primary || (auth !==( "owner" || "controller"))}  onChange={(e)=>setPrimary(e.target.value)} value={primary} type="text"  className="block w-full mt-2 p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={name.primary || "Not set"} required />
+                    <input disabled={true}   value={primary} type="text"  className="block w-full mt-2 p-4 ps-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={name.primary || "Not set"} required />
                     {(auth == "owner" || auth == "controller") &&(
                         <Fragment>
                     {name.primary ? (

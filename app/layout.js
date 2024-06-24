@@ -7,7 +7,10 @@ import NavbarExpandable from "@/components/Modals/NavbarExpandable";
 import { headers } from 'next/headers'
 import { cookieToInitialState } from 'wagmi'
 import { config } from '@/config'
-import Web3ModalProvider from '@/context'
+import Web3ModalProvider from '@/context/wagmiProvider'
+import { Web3Provider } from '@/context/ethersProvider';
+
+
 
 const inter = Inter({ subsets: ["latin"] });
  
@@ -16,36 +19,19 @@ export const metadata = {
   description: "Explore the Linagee Name Registrar and mint your own Linagee Name.",
 }; 
 
+
 export default function RootLayout({ children }) {
-  //const [initialState, setInitialState] = useState()
-  //let initialState = undefined
 
 
   const initialState = cookieToInitialState(config, headers().get('cookie'))
 
-  // // if(global?.window !== "undefined"){
-  // //   initialState = cookieToInitialState(config, headers().get('cookie'))
-  // // }
 
-  // if (typeof localStorage !== 'undefined') {
-  //   initialState = cookieToInitialState(config, headers().get('cookie'))
-  // } else if (typeof sessionStorage !== 'undefined') {
-  //   // Fallback to sessionStorage if localStorage is not supported
-  //   initialState = cookieToInitialState(config, headers().get('cookie'))
-  // } else {
-  //   // If neither localStorage nor sessionStorage is supported
-  //   console.log('Web Storage is not supported in this environment.');
-  // }
-
-  // // useEffect(() => {
-  // //   const initialStateResp = cookieToInitialState(config, headers().get('cookie'))
-  // //   setInitialState(initialStateResp)
-  // //   }, []);
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} flex flex-col min-h-screen mb-20 sm:mb-0 `}>
       <Web3ModalProvider initialState={initialState}> 
+      <Web3Provider>
         <Providers>
           {/* <Header /> */}
           <NavbarExpandable />
@@ -54,6 +40,7 @@ export default function RootLayout({ children }) {
           </div>
           <Footer />
         </Providers>
+        </Web3Provider>
         </Web3ModalProvider>
       </body>
     </html>

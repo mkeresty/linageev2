@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLnrName } from "@/utils/hooks/useLnr";
 import LnrSvg from "@/components/LnrSvg";
 import { IoIosGift } from "react-icons/io";
@@ -14,7 +14,7 @@ import { InfinitySpin } from "react-loader-spinner";
 import { IoIosMore } from "react-icons/io";
 import StandardModal from "@/components/Modals/StandardModal";
 import { TbProgressBolt } from "react-icons/tb";
-
+import { useWeb3 } from "@/context/ethersProvider";
 
 
 export default function Name({params}){

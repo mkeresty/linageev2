@@ -3,7 +3,6 @@
 import {useState, useEffect } from "react";
 import { toast } from 'react-hot-toast';
 import { useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { getCurrentSigner} from "@/utils/etherutils";
 import LNR from "@/utils/lnrethers";
 import { callLnrClass, getStatus } from "@/utils/nameUtils";
 import { IoIosGift } from "react-icons/io";
@@ -11,12 +10,13 @@ import { FaBoxOpen } from "react-icons/fa";
 import { LuSparkles } from "react-icons/lu";
 import { TbCubeSend } from "react-icons/tb";
 import { motion} from "framer-motion";
-
+import { useWeb3 } from "@/context/ethersProvider";
 
 export default function Wrap({name}){
-    const { walletProvider } = useWeb3ModalProvider();
     const [status, setStatus] = useState("")
     const [loading, setLoading] = useState(false)
+
+    const {provider, signer} = useWeb3()
 
     const statuses = [
                         {statusName: "readyForCreateWrapper", title:"Create wrapper", action: "createWrapper", args: [name.name], icon: <LuSparkles className="w-4 h-4" />},
@@ -27,29 +27,28 @@ export default function Wrap({name}){
 
     const handleStatus = async() =>{
         setLoading(true)
-        let statusResp = await getStatus(walletProvider, name.name, name.domainBytecode)
+        let statusResp = await getStatus(signer, name.name, name.domainBytecode)
         setStatus(statusResp)
         setLoading(false)
         return
     }
 
     useEffect(()=>{
-        if(name && name.name){
+        if(name && name.name && signer){
             handleStatus()
         }
 
-    },[name])
+    },[name, signer])
 
 
 
     async function handleAction(action, statusName, args){
         setLoading(true)
-        console.log(action, statusName, args)
 
         try{
-            const {address, signer} = await getCurrentSigner(walletProvider)
 
-            let statusResp = await getStatus(walletProvider, name.name, name.domainBytecode)
+
+            let statusResp = await getStatus(signer, name.name, name.domainBytecode)
             if(statusResp !== statusName){
                 return(toast.error("Incorrect status, please reload or wait for any pending transactions"))
             }

@@ -7,7 +7,6 @@ export default function LnrSvg({item, classVars, mode = undefined}) {
   const router = useRouter();
 
   const handleClick = () => {
-    console.log("clicked", mode)
     if(mode == "names"){
       router.push(`/name/${item.domainBytecode}`)
     }
