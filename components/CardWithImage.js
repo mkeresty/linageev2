@@ -104,7 +104,7 @@ export default function CardWithImage({item, mode}) {
 
 
       </FlipCard>
-      <div className="flex justify-between items-center mt-5">
+      <div className="flex justify-between items-center flex-row-reverse mt-5">
 
 
         <CardItem
@@ -112,9 +112,8 @@ export default function CardWithImage({item, mode}) {
           as="button"
           className="px-2 rounded-xl text-lg  text-neutral-600 font-normal dark:text-white"
         >
-          {mode == "names" &&(
-          <IoArrowRedoSharp onClick={handleFlip} />
-          )}
+          <IoArrowRedoSharp onClick={mode == "names" ? routeName: handleFlip} />
+
         </CardItem>
         <CardItem
           translateZ={20}

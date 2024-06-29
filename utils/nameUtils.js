@@ -231,9 +231,7 @@ export async function getStatus(signer, domain, bytes){
 export async function transferByTokenId(signer, fromAddress, toAddress, tokenId){
     const lnr = new LNR(ethers, signer)
     try{
-        console.log("invoking transder")
         let response =  await lnr.wrapperContract.transferFrom(fromAddress, toAddress, tokenId)
-        console.log(response)
         if (response && response.wait) {
             const toastId = toast.loading('Transaction pending...');
             const receipt = await response.wait();
@@ -373,7 +371,6 @@ export async function checkOwner(signer, name){
 
     try{
         let ownerResp = await callLnrClass(signer, "owner", name)
-        console.log(ownerResp)
         if(ownerResp && ownerResp.length==2 && !ethers.utils.isAddress(ownerResp[0])){
             return(false)
         }

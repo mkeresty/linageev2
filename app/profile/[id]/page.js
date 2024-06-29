@@ -3,7 +3,7 @@
 import BreadCrumbComponent from "@/components/BreadCrumbComponent";
 import Grid from "@/components/Grid";
 import { useState, useEffect, useContext, use } from "react";
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { callAPI, makeQueryClient} from "@/utils/utils";
 import { callLnrClass, hydrateNames, resolveOrReturnOld } from "@/utils/nameUtils";
 import PaginationComponent from "@/components/PaginationComponent";
@@ -11,13 +11,15 @@ import { FaCircleCheck } from "react-icons/fa6";
 import AnimatedTabs from "@/components/AnimatedTabs";
 import { useLnrCall, useLnrProfile } from "@/utils/hooks/useLnr";
 import { InfinitySpin } from "react-loader-spinner";
+import CopyClipboard from "@/components/CopyClipboard";
 
 
 
-export default function Profile() {
+export default function Profile({params}) {
   const router = useRouter();
+  const pathname = usePathname()
+
   const searchParams = useSearchParams();
-  const searchRequest = searchParams.get('search')
   const currentOffset = searchParams.get('offset') || 0;
 
   const mode = searchParams.get('mode') || "names";
@@ -27,7 +29,7 @@ export default function Profile() {
   const [items, setItems] = useState([]);
   const [nextPage, setNextPage] = useState(undefined);
 
-  const { name: name, address: address, loading: loading, error: error } = useLnrProfile(searchRequest);
+  const { name: name, address: address, loading: loading, error: error } = useLnrProfile(params.id);
 
 
 
@@ -75,10 +77,9 @@ export default function Profile() {
 
     const [selected, setSelected] = useState(mode);
     const handleSelection = (index) => {
-      console.log("selected", index)
       setItems([])
       setSelected(index)
-      router.push(`profile?search=${searchRequest}&mode=${index}`)
+      router.push(`${pathname}?&mode=${index}`)
     }
 
 
@@ -89,7 +90,9 @@ export default function Profile() {
         <div className="flex flex-row w-full items-end justify-between ">
           <div className="flex flex-col gap-y-2 mt-3">
           <h2 className="text-2xl font-bold">{name}</h2>
-          <h3 className="text-md font-light">{(address && address.length > 4) ? address.slice(0,4) +"..."+address.slice(-4) : ""}</h3>
+          <h3 className="text-md font-light">
+          <CopyClipboard forWhat={"owner"} text={address} />
+            </h3>
 
           </div>
 

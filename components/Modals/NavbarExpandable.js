@@ -102,7 +102,7 @@ export default function NavbarExpandable() {
     <FaWallet  onClick={() => open()} className="ml-2 h-4 w-4 text-gray-700 dark:text-white hover:cursor-pointer hover:scale-105 hover:text-gray-500 dark:hover:text-gray-500 transition duration-100 ease-in-out"/>
 
     {!isDisconnected && address && (
-    <FaUser onClick={()=>router.push(`/profile?search=${address}`)} className="ml-2 h-4 w-4 text-gray-700 dark:text-white hover:cursor-pointer hover:scale-105 hover:text-gray-500 dark:hover:text-gray-500 transition duration-100 ease-in-out"/>
+    <FaUser onClick={()=>router.push(`/profile/${address}`)} className="ml-2 h-4 w-4 text-gray-700 dark:text-white hover:cursor-pointer hover:scale-105 hover:text-gray-500 dark:hover:text-gray-500 transition duration-100 ease-in-out"/>
 
     )}
     
