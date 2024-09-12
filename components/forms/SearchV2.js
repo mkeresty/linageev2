@@ -29,7 +29,7 @@ export default function SearchV2(props = {styles: "", initialStyles: "opacity-75
         e.preventDefault();
         let stringName = searchName;
         if(ethers.utils.isAddress(stringName) === true){
-            router.push(`/profile?address=${stringName}`)
+            router.push(`/profile/${stringName}`)
             return
         }
         if(stringName.length < 1){

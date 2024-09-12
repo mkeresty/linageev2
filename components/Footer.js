@@ -28,9 +28,9 @@ function Footer() {
                                     <li className="mb-4">
                                         <a href={"https://docs.linagee.app/docs/"} target="_blank" className="hover:underline">Docs</a>
                                     </li>
-                                    {/* <li>
-                                        <a href={""} target="_blank" className="hover:underline">Integrations</a>
-                                    </li> */}
+                                    <li>
+                                        <a href={"/about"}  className="hover:underline">About</a>
+                                    </li>
                                 </ul>
                             </div>
                             <div>

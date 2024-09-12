@@ -2,6 +2,7 @@
 
 
 import { ethers } from 'ethers';
+import { useSearchParams, useRouter } from 'next/navigation'
 
 import { useWeb3ModalProvider, useWeb3ModalAccount } from '@web3modal/ethers5/react'
 import { hydrateNames, getController , getOwner} from "@/utils/nameUtils";
@@ -36,6 +37,8 @@ export function useLnrProfile(addressOrName) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const router = useRouter();
+
 
   const { provider, signer} = useWeb3();
 
@@ -56,6 +59,9 @@ export function useLnrProfile(addressOrName) {
         if(ethers.utils.isAddress(addressOrName)){
           setAddress(addressOrName)
           let nameResponse = await callLnrClass(provider, "lookupAddress", addressOrName)
+          if(nameResponse){
+            router.push(`${nameResponse}`)
+          }
           setName(nameResponse)
         }
         else{

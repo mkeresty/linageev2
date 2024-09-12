@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useLnrName } from "@/utils/hooks/useLnr";
 import LnrSvg from "@/components/LnrSvg";
-import { IoIosGift } from "react-icons/io";
+import { IoIosGift } from "react-icons/io"; 
 import { FaBoxOpen } from "react-icons/fa";
 import { PiSealCheckFill } from "react-icons/pi";
 import { LuBadgeX } from "react-icons/lu";
